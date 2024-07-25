@@ -1,0 +1,621 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+# Source: megatron_benchmark/templates/nemo-example.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "release-name" 
+data:
+  nemo-configuration.yaml: |-   
+    run:
+      name: llama2_7b_bf16_mbs2__bucket2
+      results_dir:
+      time_limit: 0:10:00
+      dependency: singleton
+    trainer:
+      devices: 8
+      accelerator: gpu
+      precision: bf16
+      logger: false
+      enable_checkpointing: false
+      use_distributed_sampler: false
+      max_epochs: null
+      max_steps: 50
+      max_time: 05:23:30:00
+      log_every_n_steps: 1
+      val_check_interval: 50
+      limit_val_batches: 32
+      limit_test_batches: 50
+      accumulate_grad_batches: 1
+      gradient_clip_val: 1.0
+    exp_manager:
+      explicit_log_dir:
+      exp_dir: null
+      name: megatron_llama
+      create_wandb_logger: false
+      resume_if_exists: false
+      resume_ignore_no_checkpoint: true
+      create_checkpoint_callback: false
+      checkpoint_callback_params:
+        monitor: val_loss
+        save_top_k: 10
+        mode: min
+        always_save_nemo: false
+        save_nemo_on_train_end: false
+        model_parallel_size: 1
+      log_step_timing: true
+      step_timing_kwargs:
+        sync_cuda: true
+        buffer_size: 5
+      create_tensorboard_logger: false
+    model:
+      mcore_gpt: true
+      micro_batch_size: 2
+      global_batch_size: 1024
+      rampup_batch_size: null
+      tensor_model_parallel_size: 1
+      pipeline_model_parallel_size: 1
+      virtual_pipeline_model_parallel_size: null
+      encoder_seq_length: 4096
+      max_position_embeddings: 4096
+      num_layers: 32
+      hidden_size: 4096
+      ffn_hidden_size: 11008
+      num_attention_heads: 32
+      init_method_std: 0.01
+      use_scaled_init_method: true
+      hidden_dropout: 0.0
+      attention_dropout: 0.0
+      ffn_dropout: 0.0
+      kv_channels: null
+      apply_query_key_layer_scaling: true
+      normalization: rmsnorm
+      layernorm_epsilon: 1.0e-05
+      do_layer_norm_weight_decay: false
+      make_vocab_size_divisible_by: 128
+      pre_process: true
+      post_process: true
+      persist_layer_norm: true
+      bias: false
+      activation: fast-swiglu
+      headscale: false
+      transformer_block_type: pre_ln
+      openai_gelu: false
+      normalize_attention_scores: true
+      position_embedding_type: rope
+      rotary_percentage: 1.0
+      apply_rope_fusion: true
+      attention_type: multihead
+      share_embeddings_and_output_weights: false 
+      tokenizer:
+        library: 'sentencepiece'
+        type: null
+        model:
+        delimiter: null
+        vocab_file: null
+        merge_file: null
+        sentencepiece_legacy: false
+      native_amp_init_scale: 4294967296
+      native_amp_growth_interval: 1000
+      hysteresis: 2
+      fp32_residual_connection: false
+      fp16_lm_cross_entropy: false
+      megatron_amp_O2: true
+      grad_allreduce_chunk_size_mb: 100
+      grad_div_ar_fusion: true
+      gradient_accumulation_fusion: true
+      bias_activation_fusion: true
+      bias_dropout_add_fusion: true
+      masked_softmax_fusion: true
+      seed: 1234
+      resume_from_checkpoint: null
+      use_cpu_initialization: false
+      onnx_safe: false
+      apex_transformer_log_level: 30
+      gradient_as_bucket_view: true
+      sync_batch_comm: false
+      activations_checkpoint_granularity: null
+      activations_checkpoint_method: block
+      activations_checkpoint_num_layers: 0
+      num_micro_batches_with_partial_activation_checkpoints: null
+      activations_checkpoint_layers_per_pipeline: null
+      sequence_parallel: false
+      transformer_engine: true
+      fp8: false
+      fp8_e4m3: false
+      fp8_hybrid: true
+      fp8_margin: 0
+      fp8_interval: 1
+      fp8_amax_history_len: 128
+      fp8_amax_compute_algo: max
+      use_emha: false
+      ub_tp_comm_overlap: false
+      tp_comm_atomic_ag: false
+      tp_comm_atomic_rs: false
+      use_flash_attention: true
+      optim:
+        name: distributed_fused_adam
+        lr: 0.0001
+        weight_decay: 0.1
+        betas:
+        - 0.9
+        - 0.95
+        bucket_cap_mb: 400
+        overlap_grad_sync: true
+        overlap_param_sync: true
+        contiguous_grad_buffer: true
+        contiguous_param_buffer: true
+        sched:
+          name: CosineAnnealing
+          warmup_steps: 50
+          constant_steps: 0
+          min_lr: 1.0e-05
+        grad_sync_dtype: bf16
+      data:
+        # mock_dataset: true 
+        data_impl: mmap                                                             
+        splits_string: "90,8,2"                                                  
+        seq_length: 4096
+        skip_warmup: true                                                           
+        num_workers: 4                                                              
+        exchange_indices_distributed: true
+        dataloader_type: single  # cyclic                                           
+        reset_position_ids: false  # Reset position ids after end-of-document token 
+        reset_attention_mask: false  # Reset attention mask after end-of-document token
+        eod_mask_loss: false  # Mask loss for the end of document tokens            
+        index_mapping_dir: null  # path to save index mapping .npy files, by default will save in the same location as data_prefix
+      distributed_adam_bucket_merge_size: 4
+      fp8_params: true
+    
+      nsys_profile:
+        enabled: true
+        start_step: 40  # Global batch to start profiling
+        end_step: 43 # Global batch to end profiling
+        ranks: [ 0 ] # Global rank IDs to profile
+        gen_shape: False # Generate model and kernel details including input shapes
+---
+# Source: megatron_benchmark/templates/nemo-example.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: "release-name"
+spec:
+  clusterIP: None
+  selector:
+    job-name: "release-name"
+---
+# Source: megatron_benchmark/templates/nemo-example.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "release-name"
+  namespace: default
+  labels:
+spec:
+  parallelism: 2
+  completions: 2
+  completionMode: Indexed
+  ttlSecondsAfterFinished: 43200
+  template:
+   metadata:
+    annotations:
+      kubectl.kubernetes.io/default-container: megatron
+
+   spec:
+    schedulingGates:
+    - name: "gke.io/topology-aware-auto-scheduling"
+    hostNetwork: true
+    dnsPolicy: ClusterFirstWithHostNet
+    subdomain: "release-name"
+    restartPolicy: Never
+
+    
+       
+    tolerations:
+    - operator: "Exists"
+      key: nvidia.com/gpu
+    - operator: "Exists"
+      key: cloud.google.com/impending-node-termination 
+
+    volumes:
+    
+    - name: nvidia-install-dir-host
+      hostPath:
+        path: /home/kubernetes/bin/nvidia
+    
+ 
+    - name: nccl-plugin-volume
+      emptyDir: {}    
+    
+    - name: tcpx-daemon-socket
+      hostPath:
+        path: /run/tcpx
+     
+    - name: workload-configuration
+      configMap:
+        name: "release-name"
+    - name: workload-terminated-volume
+      emptyDir: {}        
+    - name: local-ssd
+      hostPath:
+        path: /mnt/stateful_partition/kube-ephemeral-ssd   
+    - name: shared-memory
+      emptyDir:
+        medium: "Memory"
+        sizeLimit: 250Gi
+
+    initContainers:
+
+    - name: training-data-downloader
+      image: gcr.io/google.com/cloudsdktool/google-cloud-cli
+      volumeMounts:
+      - name: local-ssd
+        mountPath: "/ssd"
+
+      env:
+      - name: GCS_DATA_SOURCE
+        value: "gs://nemo-megatron-demo/training-data/tokenized/sentencepiece-llama2/wikipedia"
+      - name: GCS_DATA_TARGET
+        value: "/ssd/.cache/"
+      command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Caching training data from $GCS_DATA_SOURCE to $GCS_DATA_TARGET"
+          mkdir -p $GCS_DATA_TARGET
+
+          SECONDS=0
+          gcloud storage rsync \
+            --recursive \
+            $GCS_DATA_SOURCE $GCS_DATA_TARGET
+          duration=$SECONDS
+          echo "Transferred or synchronized $GCS_DATA_SOURCE to $GCS_DATA_TARGET in $duration seconds."
+
+    
+    - name: nccl-plugin-installer
+      image: "us-docker.pkg.dev/gce-ai-infra/gpudirect-tcpxo/nccl-plugin-gpudirecttcpx-dev:v1.0.1"
+      imagePullPolicy: Always
+      volumeMounts:
+      - name: nccl-plugin-volume
+        mountPath: /usr/local/nccl-plugin
+      command:
+        - /bin/sh
+        - -c
+        - |
+          mkdir -p /var/lib/tcpxo
+          ln -s /var/lib/tcpxo /var/lib/tcpx
+          /scripts/container_entry.sh install --install-nccl
+          # cp -r /var/lib/tcpxo/lib64/. /usr/local/nccl-plugin/lib64
+          cp -r /var/lib/tcpxo/* /usr/local/nccl-plugin/
+          echo "Installed NCCL plugin to pod-wide, shared NCCL plug-in volume"
+          echo "Contents (mounted at /usr/local/nccl-plugin/lib64):"
+          ls /usr/local/nccl-plugin/lib64 | sed 's/^/  /'
+          echo "Contents (mounted at /usr/local/nccl-plugin/):"
+          ls /usr/local/nccl-plugin/ | sed 's/^/  /'
+
+    
+
+    containers:
+
+    # Either the tcpx or tcpxo receive daemon
+    
+    - name: network-rx-daemon
+      image: "us-docker.pkg.dev/gce-ai-infra/gpudirect-tcpxo/tcpgpudmarxd-dev:v1.0.8"
+      imagePullPolicy: Always
+      securityContext:
+        privileged: true
+      volumeMounts:
+      - name: tcpx-daemon-socket
+        mountPath: /tmp
+      - name: workload-terminated-volume
+        mountPath: /semaphore
+      
+      - name: nvidia-install-dir-host
+        mountPath: "/usr/local/nvidia"
+      
+      env:
+      - name: LD_LIBRARY_PATH
+      
+        value: /usr/local/nvidia/lib64
+      
+
+       
+
+      
+      command:
+      - bash
+      - -c
+      - |
+        /fts/entrypoint_rxdm_container.sh --num_hops 2 --num_nics 8 --uid=  --alsologtostderr &
+        while [ ! -e "/semaphore/workload_terminated" ]; do sleep 10; done
+        pkill -e "^"entrypoint_rxdm_container.sh || true
+        sleep 15     
+      
+
+     
+     
+    - name: megatron
+      image: "us-east4-docker.pkg.dev/supercomputer-testing/reproducibility/nemo:24.05"
+      imagePullPolicy: Always
+      securityContext:
+        privileged: true      
+      env:
+      - name: JOB_IDENTIFIER
+        value: "release-name-1722445532-dqdy"
+      - name: JOB_TIMESTAMP
+        value: "1722445532"
+      - name: JOB_UUID
+        value: "b7b12d10-c4dd-4ba0-9692-d530295ccd92"
+      - name: JOB_ORCHESTRATOR
+        value: "gke"
+
+      - name: SSD_MOUNT_PATH
+        value: "/ssd"      
+
+      # The following settings are specific to the Torch distributed launcher:
+      - name: GCS_FUSE_BUCKET
+        value: "reproducibility-public"
+      - name: TORCH_DISTRIBUTED_TARGET
+        value: "/opt/NeMo/examples/nlp/language_modeling/megatron_gpt_pretraining.py"
+      - name: TORCH_DISTRIBUTED_TRACING
+        value: "ALL"
+
+
+      - name: MASTER_ADDR
+        value: "release-name-0.release-name.default.svc.cluster.local"
+      - name: MASTER_PORT
+        value: "6002"
+      - name: WORLD_SIZE
+        value: "16"        
+      - name: NNODES
+        value: "2"        
+      - name: GPUS_PER_NODE
+        value: "8"        
+      - name: GLOO_SOCKET_IFNAME
+      
+        value: "eth0"
+         
+
+      # The leader node can launch an embedded Tensorboard server (if needed)
+
+      # The following arguments are passed to the Workload:
+      - name: "WORKLOAD_exp_manager.explicit_log_dir"
+        value: "/nemo-experiments/results"
+      - name: "WORKLOAD_exp_manager.exp_dir"
+        value: "/nemo-experiments/"
+      - name: "WORKLOAD_model.data.index_mapping_dir"
+        value: "/gcs/index_mapping_dir"
+      - name: "WORKLOAD_model.data.data_prefix"
+        value: "[1.0,/ssd/.cache/wikipedia-tokenized-for-llama2]"
+      - name: "WORKLOAD_model.tokenizer.model"
+        value: "/ssd/.cache/llama-2-7b-megatron-checkpoint/tokenizer.model"       
+
+      # The following is needed to prevent send-receive stalling execution
+      - name: NVTE_FWD_LAYERNORM_SM_MARGIN
+        value: "8"
+      - name: NVTE_BWD_LAYERNORM_SM_MARGIN
+        value: "8"    
+         
+            
+   
+      # The following TCPxo settings should likely not be adjusted:
+      
+      - name: NCCL_BUFFSIZE
+        value: "8388608"   
+      - name: NCCL_FASTRAK_CTRL_DEV
+      
+        value: "eth0"
+      
+      - name: NCCL_FASTRAK_IFNAME
+      
+        value: "eth1,eth2,eth3,eth4,eth5,eth6,eth7,eth8"
+      
+      - name: NCCL_FASTRAK_NUM_FLOWS
+        value: "2"
+      - name: NCCL_FASTRAK_NUM_FLOWS_PER_GROUP
+        value: "1"        
+      - name: NCCL_FASTRAK_ENABLE_CONTROL_CHANNEL
+        value: "0"
+      - name: NCCL_FASTRAK_ENABLE_HOTPATH_LOGGING
+        value: "0"       
+      - name: NCCL_FASTRAK_USE_SNAP
+        value: "1"
+      - name: NCCL_FASTRAK_USE_LLCM
+        value: "1"        
+
+      # The following NCCL tuner settings should likely not be adjusted: 
+      - name: NCCL_TUNER_PLUGIN
+        value: "libnccl-tuner.so"
+      - name: NCCL_TUNER_CONFIG_PATH
+        value: "/usr/local/nccl-plugin/lib64/a3plus_tuner_config.textproto"
+   
+      
+
+      
+          
+       # The following NCCL settings should likely not be adjusted:
+      - name: NCCL_SOCKET_IFNAME
+      
+        value: "eth0"
+         
+      - name: NCCL_DYNAMIC_CHUNK_SIZE
+        value: "524288"
+      - name: NCCL_P2P_NET_CHUNKSIZE
+        value: "524288"
+      - name: NCCL_P2P_PCI_CHUNKSIZE
+        value: "524288"
+      - name: NCCL_P2P_NVL_CHUNKSIZE
+        value: "1048576"
+      - name: NCCL_CROSS_NIC
+        value: "0"
+      - name: NCCL_PROTO
+        value: "Simple"
+      - name: NCCL_NET_GDR_LEVEL
+        value: "PIX"
+      - name: NCCL_P2P_PXN_LEVEL
+        value: "0"
+      - name: NCCL_NVLS_ENABLE
+        value: "0"
+      - name: TRAINING_FILENAME
+        value: "mixtral-8x7b-nvidia-configs.yaml"
+      - name: IMAGE_VERSION
+        value: "24.05"
+      - name: NCCL_DEBUG
+        value: "VERSION"
+      - name: NCCL_ALGO
+        value: "Ring,Tree"
+      - name: NCCL_MIN_NCHANNELS
+        value: "4"
+ 
+      
+ 
+      command:
+      - bash
+      - -c
+      - |
+        function on_script_completion {
+          # Note: This semaphore is used to terminate the TCPx side-car
+          touch /semaphore/workload_terminated
+        }
+        trap on_script_completion EXIT
+        echo "Pod on $(hostname --fqdn) is running"
+        echo "Pod is assigned job index of $JOB_COMPLETION_INDEX"
+        echo "Job ID is $JOB_IDENTIFIER"
+
+        echo "Running nvidia-smi"
+        nvidia-smi
+
+        mkdir -p /gcs
+        gcsfuse --client-protocol http2 $GCS_FUSE_BUCKET /gcs 
+
+        mkdir -p /gcs/index_mapping_dir
+
+        # export LD_LIBRARY_PATH="/usr/local/nccl-plugin/lib64:/usr/local/cuda-12.3/lib64:/usr/local/nvidia/lib64/:${LD_LIBRARY_PATH}"
+        export LD_LIBRARY_PATH="/usr/local/nccl-plugin/lib64:/usr/local/nvidia/lib64/:${LD_LIBRARY_PATH}"
+        echo "Warning: Set LD_LIBRARY_PATH=$LD_LIBRARY_PATH to override the NCCL library"
+
+        ldconfig /usr/local/nvidia/lib64/
+        echo "Added /usr/local/nvidia/lib64/ to ldconfig:"
+        ldconfig -p | grep libcuda | sed 's/^/  /'
+
+        echo "Contents of /usr/local/nccl-plugin/lib64:"
+        ls /usr/local/nccl-plugin/lib64 | sed 's/^/  /'
+
+        touch $SSD_MOUNT_PATH/hello-from-$HOSTNAME.txt
+        echo "Local SSD contents (path $SSD_MOUNT_PATH):"; ls $SSD_MOUNT_PATH | sed 's/^/  /'
+
+        echo "Downloading GPT vocabulary files"
+        wget https://s3.amazonaws.com/models.huggingface.co/bert/gpt2-vocab.json &&\
+        wget https://s3.amazonaws.com/models.huggingface.co/bert/gpt2-merges.txt
+
+        echo "NeMo configuration file:"                                         
+        cat /etc/workload-configuration/nemo-configuration.yaml | sed 's/^/| /' 
+        echo ""                                                                                                                                                
+        readarray -d "" workload_arguments < <(env | grep -e "^WORKLOAD_" | sed 's/^WORKLOAD_/+/' | tr '\n' '\0') 
+        echo "Detected the following additional workload arguments:"            
+        for workload_argument in "${workload_arguments[@]}"; do                 
+          echo "  $workload_argument"                                           
+        done 
+       
+        sleep 10 # <- Hack to allow some time for service to boot
+
+        mount /tmp -o remount,exec 
+        chmod -R a+rwx /tmp
+
+        echo "Checking for presence of nsys:"                                   
+        which nsys  
+
+        echo "Nsight profiling will go to /gcs/nemo-experiments/$JOB_IDENTIFIER/."
+        mkdir -p /gcs/nemo-experiments/$JOB_IDENTIFIER/
+
+        apt -y update && apt -y install gdb python3.10-dbg
+
+        export NODE_RANK=$JOB_COMPLETION_INDEX                                  
+        echo "Launching Torch distributed as node rank $NODE_RANK out of $NNODES nodes"
+        for ((LOCAL_RANK=0; LOCAL_RANK <= $((GPUS_PER_NODE - 1)); LOCAL_RANK++)); do
+          RANK=$((8*$NODE_RANK + $LOCAL_RANK))                                  
+         
+          OMP_NUM_THREADS=12 RANK=$RANK LOCAL_RANK=$LOCAL_RANK \
+            nsys profile -s none -t nvtx,cuda --capture-range=cudaProfilerApi --capture-range-end=stop \
+            -o /gcs/nemo-experiments/$JOB_IDENTIFIER/rank-$RANK \
+            --session-new "nemo-rank$RANK" \
+            python $TORCH_DISTRIBUTED_TARGET \
+            --config-path="/etc/workload-configuration" \
+            --config-name="nemo-configuration.yaml" \
+            +trainer.num_nodes="$NNODES" \
+            +exp_manager.version="$JOB_IDENTIFIER" \
+            ${workload_arguments[@]} &
+
+          echo "Launched rank $RANK with PID $!"
+          TORCH_PIDS[$LOCAL_RANK]=$!                                            
+        done  
+
+        if [ "$NODE_RANK" -eq "1" ]; then
+           echo "Launching nvidia-smi in daemon mode with (20 sec delay)"
+           nvidia-smi dmon -d 20 -s pum &
+        fi
+        
+        if [ "$NODE_RANK" -eq "0" ] && { ! [ -z ${EMBEDDED_TENSORBOARD_TARGET} ]; }; then
+          echo "Launching an embedded Tensorboard against log directory $EMBEDDED_TENSORBOARD_TARGET"
+          tensorboard --logdir $EMBEDDED_TENSORBOARD_TARGET &
+          wait # <-- This will indefinitely stall node rank 0
+        fi
+
+        # Wait for Torch processes (might be problematic if only one fails)
+        for PID in ${TORCH_PIDS[*]}; do
+          echo "Waiting on Torch PID $PID"
+          wait $PID
+        done
+
+        echo "Pod on $(hostname --fqdn) is exiting"
+      volumeMounts:
+        
+        - name: nvidia-install-dir-host
+          mountPath: /usr/local/nvidia
+               
+        - name: nccl-plugin-volume
+          mountPath: /usr/local/nccl-plugin
+        
+        - name: tcpx-daemon-socket
+          mountPath: /tmp
+        
+        - name: workload-terminated-volume
+          mountPath: /semaphore   
+        - name: workload-configuration
+          mountPath: /etc/workload-configuration  
+        - name: shared-memory
+          mountPath: /dev/shm 
+        - name: local-ssd
+          mountPath: "/ssd"        
+
+      resources:
+        limits:
+          nvidia.com/gpu: 8
+---
+# Source: megatron_benchmark/templates/nemo-example.yaml
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.

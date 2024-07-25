@@ -1,0 +1,425 @@
+{
+  "license": "Copyright 2024 Google LLC\n\nLicensed under the Apache License, Version 2.0 (the \"License\");\nyou may not use this file except in compliance with the License.\nYou may obtain a copy of the License at\n\n    http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an \"AS IS\" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License.",
+  "apiVersion": "v1",
+  "kind": "ConfigMap",
+  "metadata": {
+    "name": "release-name"
+  },
+  "data": {
+    "nemo-configuration.yaml": "run:\n  name: llama2_7b_bf16_mbs2__bucket2\n  results_dir:\n  time_limit: 0:10:00\n  dependency: singleton\ntrainer:\n  devices: 8\n  accelerator: gpu\n  precision: bf16\n  logger: false\n  enable_checkpointing: false\n  use_distributed_sampler: false\n  max_epochs: null\n  max_steps: 50\n  max_time: 05:23:30:00\n  log_every_n_steps: 1\n  val_check_interval: 50\n  limit_val_batches: 32\n  limit_test_batches: 50\n  accumulate_grad_batches: 1\n  gradient_clip_val: 1.0\nexp_manager:\n  explicit_log_dir:\n  exp_dir: null\n  name: megatron_llama\n  create_wandb_logger: false\n  resume_if_exists: false\n  resume_ignore_no_checkpoint: true\n  create_checkpoint_callback: false\n  checkpoint_callback_params:\n    monitor: val_loss\n    save_top_k: 10\n    mode: min\n    always_save_nemo: false\n    save_nemo_on_train_end: false\n    model_parallel_size: 1\n  log_step_timing: true\n  step_timing_kwargs:\n    sync_cuda: true\n    buffer_size: 5\n  create_tensorboard_logger: false\nmodel:\n  mcore_gpt: true\n  micro_batch_size: 2\n  global_batch_size: 1024\n  rampup_batch_size: null\n  tensor_model_parallel_size: 1\n  pipeline_model_parallel_size: 1\n  virtual_pipeline_model_parallel_size: null\n  encoder_seq_length: 4096\n  max_position_embeddings: 4096\n  num_layers: 32\n  hidden_size: 4096\n  ffn_hidden_size: 11008\n  num_attention_heads: 32\n  init_method_std: 0.01\n  use_scaled_init_method: true\n  hidden_dropout: 0.0\n  attention_dropout: 0.0\n  ffn_dropout: 0.0\n  kv_channels: null\n  apply_query_key_layer_scaling: true\n  normalization: rmsnorm\n  layernorm_epsilon: 1.0e-05\n  do_layer_norm_weight_decay: false\n  make_vocab_size_divisible_by: 128\n  pre_process: true\n  post_process: true\n  persist_layer_norm: true\n  bias: false\n  activation: fast-swiglu\n  headscale: false\n  transformer_block_type: pre_ln\n  openai_gelu: false\n  normalize_attention_scores: true\n  position_embedding_type: rope\n  rotary_percentage: 1.0\n  apply_rope_fusion: true\n  attention_type: multihead\n  share_embeddings_and_output_weights: false \n  tokenizer:\n    library: 'sentencepiece'\n    type: null\n    model:\n    delimiter: null\n    vocab_file: null\n    merge_file: null\n    sentencepiece_legacy: false\n  native_amp_init_scale: 4294967296\n  native_amp_growth_interval: 1000\n  hysteresis: 2\n  fp32_residual_connection: false\n  fp16_lm_cross_entropy: false\n  megatron_amp_O2: true\n  grad_allreduce_chunk_size_mb: 100\n  grad_div_ar_fusion: true\n  gradient_accumulation_fusion: true\n  bias_activation_fusion: true\n  bias_dropout_add_fusion: true\n  masked_softmax_fusion: true\n  seed: 1234\n  resume_from_checkpoint: null\n  use_cpu_initialization: false\n  onnx_safe: false\n  apex_transformer_log_level: 30\n  gradient_as_bucket_view: true\n  sync_batch_comm: false\n  activations_checkpoint_granularity: null\n  activations_checkpoint_method: block\n  activations_checkpoint_num_layers: 0\n  num_micro_batches_with_partial_activation_checkpoints: null\n  activations_checkpoint_layers_per_pipeline: null\n  sequence_parallel: false\n  transformer_engine: true\n  fp8: false\n  fp8_e4m3: false\n  fp8_hybrid: true\n  fp8_margin: 0\n  fp8_interval: 1\n  fp8_amax_history_len: 128\n  fp8_amax_compute_algo: max\n  use_emha: false\n  ub_tp_comm_overlap: false\n  tp_comm_atomic_ag: false\n  tp_comm_atomic_rs: false\n  use_flash_attention: true\n  optim:\n    name: distributed_fused_adam\n    lr: 0.0001\n    weight_decay: 0.1\n    betas:\n    - 0.9\n    - 0.95\n    bucket_cap_mb: 400\n    overlap_grad_sync: true\n    overlap_param_sync: true\n    contiguous_grad_buffer: true\n    contiguous_param_buffer: true\n    sched:\n      name: CosineAnnealing\n      warmup_steps: 50\n      constant_steps: 0\n      min_lr: 1.0e-05\n    grad_sync_dtype: bf16\n  data:\n    # mock_dataset: true \n    data_impl: mmap                                                             \n    splits_string: \"90,8,2\"                                                  \n    seq_length: 4096\n    skip_warmup: true                                                           \n    num_workers: 4                                                              \n    exchange_indices_distributed: true\n    dataloader_type: single  # cyclic                                           \n    reset_position_ids: false  # Reset position ids after end-of-document token \n    reset_attention_mask: false  # Reset attention mask after end-of-document token\n    eod_mask_loss: false  # Mask loss for the end of document tokens            \n    index_mapping_dir: null  # path to save index mapping .npy files, by default will save in the same location as data_prefix\n  distributed_adam_bucket_merge_size: 4\n  fp8_params: true\n\n  nsys_profile:\n    enabled: true\n    start_step: 40  # Global batch to start profiling\n    end_step: 43 # Global batch to end profiling\n    ranks: [ 0 ] # Global rank IDs to profile\n    gen_shape: False # Generate model and kernel details including input shapes"
+  }
+}
+{
+  "apiVersion": "v1",
+  "kind": "Service",
+  "metadata": {
+    "name": "release-name"
+  },
+  "spec": {
+    "clusterIP": "None",
+    "selector": {
+      "job-name": "release-name"
+    }
+  }
+}
+{
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": {
+    "name": "release-name",
+    "namespace": "default",
+    "labels": null
+  },
+  "spec": {
+    "parallelism": 2,
+    "completions": 2,
+    "completionMode": "Indexed",
+    "ttlSecondsAfterFinished": 43200,
+    "template": {
+      "metadata": {
+        "annotations": {
+          "kubectl.kubernetes.io/default-container": "megatron"
+        }
+      },
+      "spec": {
+        "schedulingGates": [
+          {
+            "name": "gke.io/topology-aware-auto-scheduling"
+          }
+        ],
+        "hostNetwork": true,
+        "dnsPolicy": "ClusterFirstWithHostNet",
+        "subdomain": "release-name",
+        "restartPolicy": "Never",
+        "tolerations": [
+          {
+            "operator": "Exists",
+            "key": "nvidia.com/gpu"
+          },
+          {
+            "operator": "Exists",
+            "key": "cloud.google.com/impending-node-termination"
+          }
+        ],
+        "volumes": [
+          {
+            "name": "nvidia-install-dir-host",
+            "hostPath": {
+              "path": "/home/kubernetes/bin/nvidia"
+            }
+          },
+          {
+            "name": "nccl-plugin-volume",
+            "emptyDir": {}
+          },
+          {
+            "name": "tcpx-daemon-socket",
+            "hostPath": {
+              "path": "/run/tcpx"
+            }
+          },
+          {
+            "name": "workload-configuration",
+            "configMap": {
+              "name": "release-name"
+            }
+          },
+          {
+            "name": "workload-terminated-volume",
+            "emptyDir": {}
+          },
+          {
+            "name": "local-ssd",
+            "hostPath": {
+              "path": "/mnt/stateful_partition/kube-ephemeral-ssd"
+            }
+          },
+          {
+            "name": "shared-memory",
+            "emptyDir": {
+              "medium": "Memory",
+              "sizeLimit": "250Gi"
+            }
+          }
+        ],
+        "initContainers": [
+          {
+            "name": "training-data-downloader",
+            "image": "gcr.io/google.com/cloudsdktool/google-cloud-cli",
+            "volumeMounts": [
+              {
+                "name": "local-ssd",
+                "mountPath": "/ssd"
+              }
+            ],
+            "env": [
+              {
+                "name": "GCS_DATA_SOURCE",
+                "value": "gs://nemo-megatron-demo/training-data/tokenized/sentencepiece-llama2/wikipedia"
+              },
+              {
+                "name": "GCS_DATA_TARGET",
+                "value": "/ssd/.cache/"
+              }
+            ],
+            "command": [
+              "/bin/sh",
+              "-c",
+              "echo \"Caching training data from $GCS_DATA_SOURCE to $GCS_DATA_TARGET\"\nmkdir -p $GCS_DATA_TARGET\n\nSECONDS=0\ngcloud storage rsync \\\n  --recursive \\\n  $GCS_DATA_SOURCE $GCS_DATA_TARGET\nduration=$SECONDS\necho \"Transferred or synchronized $GCS_DATA_SOURCE to $GCS_DATA_TARGET in $duration seconds.\"\n"
+            ]
+          },
+          {
+            "name": "nccl-plugin-installer",
+            "image": "us-docker.pkg.dev/gce-ai-infra/gpudirect-tcpxo/nccl-plugin-gpudirecttcpx-dev:v1.0.1",
+            "imagePullPolicy": "Always",
+            "volumeMounts": [
+              {
+                "name": "nccl-plugin-volume",
+                "mountPath": "/usr/local/nccl-plugin"
+              }
+            ],
+            "command": [
+              "/bin/sh",
+              "-c",
+              "mkdir -p /var/lib/tcpxo\nln -s /var/lib/tcpxo /var/lib/tcpx\n/scripts/container_entry.sh install --install-nccl\n# cp -r /var/lib/tcpxo/lib64/. /usr/local/nccl-plugin/lib64\ncp -r /var/lib/tcpxo/* /usr/local/nccl-plugin/\necho \"Installed NCCL plugin to pod-wide, shared NCCL plug-in volume\"\necho \"Contents (mounted at /usr/local/nccl-plugin/lib64):\"\nls /usr/local/nccl-plugin/lib64 | sed 's/^/  /'\necho \"Contents (mounted at /usr/local/nccl-plugin/):\"\nls /usr/local/nccl-plugin/ | sed 's/^/  /'\n"
+            ]
+          }
+        ],
+        "containers": [
+          {
+            "name": "network-rx-daemon",
+            "image": "us-docker.pkg.dev/gce-ai-infra/gpudirect-tcpxo/tcpgpudmarxd-dev:v1.0.8",
+            "imagePullPolicy": "Always",
+            "securityContext": {
+              "privileged": true
+            },
+            "volumeMounts": [
+              {
+                "name": "tcpx-daemon-socket",
+                "mountPath": "/tmp"
+              },
+              {
+                "name": "workload-terminated-volume",
+                "mountPath": "/semaphore"
+              },
+              {
+                "name": "nvidia-install-dir-host",
+                "mountPath": "/usr/local/nvidia"
+              }
+            ],
+            "env": [
+              {
+                "name": "LD_LIBRARY_PATH",
+                "value": "/usr/local/nvidia/lib64"
+              }
+            ],
+            "command": [
+              "bash",
+              "-c",
+              "/fts/entrypoint_rxdm_container.sh --num_hops 2 --num_nics 8 --uid=  --alsologtostderr &\nwhile [ ! -e \"/semaphore/workload_terminated\" ]; do sleep 10; done\npkill -e \"^\"entrypoint_rxdm_container.sh || true\nsleep 15     \n"
+            ]
+          },
+          {
+            "name": "megatron",
+            "image": "us-east4-docker.pkg.dev/supercomputer-testing/reproducibility/nemo:24.05",
+            "imagePullPolicy": "Always",
+            "securityContext": {
+              "privileged": true
+            },
+            "env": [
+              {
+                "name": "JOB_IDENTIFIER",
+                "value": "release-name-1722445532-dqdy"
+              },
+              {
+                "name": "JOB_TIMESTAMP",
+                "value": "1722445532"
+              },
+              {
+                "name": "JOB_UUID",
+                "value": "b7b12d10-c4dd-4ba0-9692-d530295ccd92"
+              },
+              {
+                "name": "JOB_ORCHESTRATOR",
+                "value": "gke"
+              },
+              {
+                "name": "SSD_MOUNT_PATH",
+                "value": "/ssd"
+              },
+              {
+                "name": "GCS_FUSE_BUCKET",
+                "value": "reproducibility-public"
+              },
+              {
+                "name": "TORCH_DISTRIBUTED_TARGET",
+                "value": "/opt/NeMo/examples/nlp/language_modeling/megatron_gpt_pretraining.py"
+              },
+              {
+                "name": "TORCH_DISTRIBUTED_TRACING",
+                "value": "ALL"
+              },
+              {
+                "name": "MASTER_ADDR",
+                "value": "release-name-0.release-name.default.svc.cluster.local"
+              },
+              {
+                "name": "MASTER_PORT",
+                "value": "6002"
+              },
+              {
+                "name": "WORLD_SIZE",
+                "value": "16"
+              },
+              {
+                "name": "NNODES",
+                "value": "2"
+              },
+              {
+                "name": "GPUS_PER_NODE",
+                "value": "8"
+              },
+              {
+                "name": "GLOO_SOCKET_IFNAME",
+                "value": "eth0"
+              },
+              {
+                "name": "WORKLOAD_exp_manager.explicit_log_dir",
+                "value": "/nemo-experiments/results"
+              },
+              {
+                "name": "WORKLOAD_exp_manager.exp_dir",
+                "value": "/nemo-experiments/"
+              },
+              {
+                "name": "WORKLOAD_model.data.index_mapping_dir",
+                "value": "/gcs/index_mapping_dir"
+              },
+              {
+                "name": "WORKLOAD_model.data.data_prefix",
+                "value": "[1.0,/ssd/.cache/wikipedia-tokenized-for-llama2]"
+              },
+              {
+                "name": "WORKLOAD_model.tokenizer.model",
+                "value": "/ssd/.cache/llama-2-7b-megatron-checkpoint/tokenizer.model"
+              },
+              {
+                "name": "NVTE_FWD_LAYERNORM_SM_MARGIN",
+                "value": "8"
+              },
+              {
+                "name": "NVTE_BWD_LAYERNORM_SM_MARGIN",
+                "value": "8"
+              },
+              {
+                "name": "NCCL_BUFFSIZE",
+                "value": "8388608"
+              },
+              {
+                "name": "NCCL_FASTRAK_CTRL_DEV",
+                "value": "eth0"
+              },
+              {
+                "name": "NCCL_FASTRAK_IFNAME",
+                "value": "eth1,eth2,eth3,eth4,eth5,eth6,eth7,eth8"
+              },
+              {
+                "name": "NCCL_FASTRAK_NUM_FLOWS",
+                "value": "2"
+              },
+              {
+                "name": "NCCL_FASTRAK_NUM_FLOWS_PER_GROUP",
+                "value": "1"
+              },
+              {
+                "name": "NCCL_FASTRAK_ENABLE_CONTROL_CHANNEL",
+                "value": "0"
+              },
+              {
+                "name": "NCCL_FASTRAK_ENABLE_HOTPATH_LOGGING",
+                "value": "0"
+              },
+              {
+                "name": "NCCL_FASTRAK_USE_SNAP",
+                "value": "1"
+              },
+              {
+                "name": "NCCL_FASTRAK_USE_LLCM",
+                "value": "1"
+              },
+              {
+                "name": "NCCL_TUNER_PLUGIN",
+                "value": "libnccl-tuner.so"
+              },
+              {
+                "name": "NCCL_TUNER_CONFIG_PATH",
+                "value": "/usr/local/nccl-plugin/lib64/a3plus_tuner_config.textproto"
+              },
+              {
+                "name": "NCCL_SOCKET_IFNAME",
+                "value": "eth0"
+              },
+              {
+                "name": "NCCL_DYNAMIC_CHUNK_SIZE",
+                "value": "524288"
+              },
+              {
+                "name": "NCCL_P2P_NET_CHUNKSIZE",
+                "value": "524288"
+              },
+              {
+                "name": "NCCL_P2P_PCI_CHUNKSIZE",
+                "value": "524288"
+              },
+              {
+                "name": "NCCL_P2P_NVL_CHUNKSIZE",
+                "value": "1048576"
+              },
+              {
+                "name": "NCCL_CROSS_NIC",
+                "value": "0"
+              },
+              {
+                "name": "NCCL_PROTO",
+                "value": "Simple"
+              },
+              {
+                "name": "NCCL_NET_GDR_LEVEL",
+                "value": "PIX"
+              },
+              {
+                "name": "NCCL_P2P_PXN_LEVEL",
+                "value": "0"
+              },
+              {
+                "name": "NCCL_NVLS_ENABLE",
+                "value": "0"
+              },
+              {
+                "name": "TRAINING_FILENAME",
+                "value": "mixtral-8x7b-nvidia-configs.yaml"
+              },
+              {
+                "name": "IMAGE_VERSION",
+                "value": "24.05"
+              },
+              {
+                "name": "NCCL_DEBUG",
+                "value": "VERSION"
+              },
+              {
+                "name": "NCCL_ALGO",
+                "value": "Ring,Tree"
+              },
+              {
+                "name": "NCCL_MIN_NCHANNELS",
+                "value": "4"
+              }
+            ],
+            "command": [
+              "bash",
+              "-c",
+              "function on_script_completion {\n  # Note: This semaphore is used to terminate the TCPx side-car\n  touch /semaphore/workload_terminated\n}\ntrap on_script_completion EXIT\necho \"Pod on $(hostname --fqdn) is running\"\necho \"Pod is assigned job index of $JOB_COMPLETION_INDEX\"\necho \"Job ID is $JOB_IDENTIFIER\"\n\necho \"Running nvidia-smi\"\nnvidia-smi\n\nmkdir -p /gcs\ngcsfuse --client-protocol http2 $GCS_FUSE_BUCKET /gcs \n\nmkdir -p /gcs/index_mapping_dir\n\n# export LD_LIBRARY_PATH=\"/usr/local/nccl-plugin/lib64:/usr/local/cuda-12.3/lib64:/usr/local/nvidia/lib64/:${LD_LIBRARY_PATH}\"\nexport LD_LIBRARY_PATH=\"/usr/local/nccl-plugin/lib64:/usr/local/nvidia/lib64/:${LD_LIBRARY_PATH}\"\necho \"Warning: Set LD_LIBRARY_PATH=$LD_LIBRARY_PATH to override the NCCL library\"\n\nldconfig /usr/local/nvidia/lib64/\necho \"Added /usr/local/nvidia/lib64/ to ldconfig:\"\nldconfig -p | grep libcuda | sed 's/^/  /'\n\necho \"Contents of /usr/local/nccl-plugin/lib64:\"\nls /usr/local/nccl-plugin/lib64 | sed 's/^/  /'\n\ntouch $SSD_MOUNT_PATH/hello-from-$HOSTNAME.txt\necho \"Local SSD contents (path $SSD_MOUNT_PATH):\"; ls $SSD_MOUNT_PATH | sed 's/^/  /'\n\necho \"Downloading GPT vocabulary files\"\nwget https://s3.amazonaws.com/models.huggingface.co/bert/gpt2-vocab.json &&\\\nwget https://s3.amazonaws.com/models.huggingface.co/bert/gpt2-merges.txt\n\necho \"NeMo configuration file:\"                                         \ncat /etc/workload-configuration/nemo-configuration.yaml | sed 's/^/| /' \necho \"\"                                                                                                                                                \nreadarray -d \"\" workload_arguments < <(env | grep -e \"^WORKLOAD_\" | sed 's/^WORKLOAD_/+/' | tr '\\n' '\\0') \necho \"Detected the following additional workload arguments:\"            \nfor workload_argument in \"${workload_arguments[@]}\"; do                 \n  echo \"  $workload_argument\"                                           \ndone \n\nsleep 10 # <- Hack to allow some time for service to boot\n\nmount /tmp -o remount,exec \nchmod -R a+rwx /tmp\n\necho \"Checking for presence of nsys:\"                                   \nwhich nsys  \n\necho \"Nsight profiling will go to /gcs/nemo-experiments/$JOB_IDENTIFIER/.\"\nmkdir -p /gcs/nemo-experiments/$JOB_IDENTIFIER/\n\napt -y update && apt -y install gdb python3.10-dbg\n\nexport NODE_RANK=$JOB_COMPLETION_INDEX                                  \necho \"Launching Torch distributed as node rank $NODE_RANK out of $NNODES nodes\"\nfor ((LOCAL_RANK=0; LOCAL_RANK <= $((GPUS_PER_NODE - 1)); LOCAL_RANK++)); do\n  RANK=$((8*$NODE_RANK + $LOCAL_RANK))                                  \n \n  OMP_NUM_THREADS=12 RANK=$RANK LOCAL_RANK=$LOCAL_RANK \\\n    nsys profile -s none -t nvtx,cuda --capture-range=cudaProfilerApi --capture-range-end=stop \\\n    -o /gcs/nemo-experiments/$JOB_IDENTIFIER/rank-$RANK \\\n    --session-new \"nemo-rank$RANK\" \\\n    python $TORCH_DISTRIBUTED_TARGET \\\n    --config-path=\"/etc/workload-configuration\" \\\n    --config-name=\"nemo-configuration.yaml\" \\\n    +trainer.num_nodes=\"$NNODES\" \\\n    +exp_manager.version=\"$JOB_IDENTIFIER\" \\\n    ${workload_arguments[@]} &\n\n  echo \"Launched rank $RANK with PID $!\"\n  TORCH_PIDS[$LOCAL_RANK]=$!                                            \ndone  \n\nif [ \"$NODE_RANK\" -eq \"1\" ]; then\n   echo \"Launching nvidia-smi in daemon mode with (20 sec delay)\"\n   nvidia-smi dmon -d 20 -s pum &\nfi\n\nif [ \"$NODE_RANK\" -eq \"0\" ] && { ! [ -z ${EMBEDDED_TENSORBOARD_TARGET} ]; }; then\n  echo \"Launching an embedded Tensorboard against log directory $EMBEDDED_TENSORBOARD_TARGET\"\n  tensorboard --logdir $EMBEDDED_TENSORBOARD_TARGET &\n  wait # <-- This will indefinitely stall node rank 0\nfi\n\n# Wait for Torch processes (might be problematic if only one fails)\nfor PID in ${TORCH_PIDS[*]}; do\n  echo \"Waiting on Torch PID $PID\"\n  wait $PID\ndone\n\necho \"Pod on $(hostname --fqdn) is exiting\"\n"
+            ],
+            "volumeMounts": [
+              {
+                "name": "nvidia-install-dir-host",
+                "mountPath": "/usr/local/nvidia"
+              },
+              {
+                "name": "nccl-plugin-volume",
+                "mountPath": "/usr/local/nccl-plugin"
+              },
+              {
+                "name": "tcpx-daemon-socket",
+                "mountPath": "/tmp"
+              },
+              {
+                "name": "workload-terminated-volume",
+                "mountPath": "/semaphore"
+              },
+              {
+                "name": "workload-configuration",
+                "mountPath": "/etc/workload-configuration"
+              },
+              {
+                "name": "shared-memory",
+                "mountPath": "/dev/shm"
+              },
+              {
+                "name": "local-ssd",
+                "mountPath": "/ssd"
+              }
+            ],
+            "resources": {
+              "limits": {
+                "nvidia.com/gpu": 8
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+null
