@@ -82,9 +82,12 @@ sudo chmod +x /usr/local/bin/helm
 ```
 
 
-Update values in /helm_context/values.yaml. You **must** modify the workload.image string value to match the one built earlier. Look for "EDIT THIS".
+Update values in /helm_context/values.yaml.
 
-You may also settings like the number of gpus or which workload image to use. 
+
+- You **must** modify the workload.image string value to match the one built earlier. Look for "EDIT THIS".
+- You **must** modify the workload.gcsBucketForDataCataPath string value to match desired existing bucket. Look for "EDIT THIS".
+- You may also settings like the number of gpus or which workload image to use. 
 
 
 ```
@@ -92,7 +95,7 @@ vi helm-context/values.yaml
 ```
 
 
-Updated values in workload configuration
+Update values in workload configuration
 
 
 ```
