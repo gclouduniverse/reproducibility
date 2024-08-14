@@ -38,7 +38,7 @@ To run llama2-7b-Nemo on GPUs:
 
 
 ```
-cd /path/to/reproducibility/workloads/llama2-7b-nemo
+cd /path/to/reproducibility/Training/A3Mega/Llama2-7B-NeMo
 ```
 
 
