@@ -29,8 +29,8 @@ workload:
 
   torchDistributedTarget: "/opt/NeMo/examples/nlp/language_modeling/megatron_gpt_pretraining.py"
 
-  # It will be mounted to /nfs on container startup using GCS fuse
-  gcsBucketForDataCataPath: reproducibility-public
+  # It will be mounted to /nfs on container startup using GCS fuse (EDIT THIS)
+  gcsBucketForDataCataPath: <bucket_name>
 
   gpus: 16 # This should be one of: {<= 8,  multiple of 8}
   arguments:
