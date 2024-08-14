@@ -147,7 +147,7 @@ Get logs (Using pod name from earlier)
 
 
 ```
-kubectl logs | grep "<pod_name>"
+kubectl logs "<pod_name>"
 ```
 
 
