@@ -23,7 +23,7 @@ export NETWORK_NAME=${CLUSTER_NAME}-only-mtu9k
 export NETWORK_FW_NAME=${NETWORK_NAME}-only-fw
 export CLUSTER_ARGUMENTS="--network=${NETWORK_NAME} --subnetwork=${NETWORK_NAME}"
 export TPU_TYPE=v4-128 #<your TPU Type>
-export NUM_SLIECES=1 #<number of TPU node-pools you want to create>
+export NUM_SLICES=1 #<number of TPU node-pools you want to create>
 ```
 
 2. Create the network and firewall for this cluster if it doesn’t exist yet.
@@ -38,7 +38,7 @@ python3 xpk.py cluster create \
 --default-pool-cpu-machine-type=n1-standard-32 \
 --cluster ${CLUSTER_NAME} \
 --tpu-type=${TPU_TYPE} \
---num-slices=${NUM_SLIECES} \
+--num-slices=${NUM_SLICES} \
 --custom-cluster-arguments="${CLUSTER_ARGUMENTS}" \
 --on-demand
 ```
@@ -54,9 +54,11 @@ python3 xpk.py workload create \
 --cluster ${CLUSTER_NAME} \
 --workload hello-world-test \
 --tpu-type=${TPU_TYPE} \
---num-slices=${NUM_SLIECES} \
+--num-slices=${NUM_SLICES} \
 --command "echo Hello World"
 ```
+* You should be able to to see results like this: ![image](https://github.com/user-attachments/assets/c33010a6-e109-411e-8fb5-afb4edb3fa72)
+
 5. You can also check your workload status with the following command:
   ```
 python3 xpk.py workload list \
@@ -86,12 +88,10 @@ bash docker_upload_runner.sh CLOUD_IMAGE_NAME=${USER}_runner
 export CLUSTER_NAME=v4-demo #<your_cluster_name>
 export WORKLOAD_NAME=llam2-7b-test #<your_workload_name>
 export TPU_TYPE=v4-128 #<your TPU Type>
-export NUM_SLIECES=1 #<number of TPU node-pools you want to use>
+export NUM_SLICES=1 #<number of TPU node-pools you want to use>
 export LOCAL_IMAGE_NAME=gcr.io/${PROJECT}/${USER}_runner
 export OUTPUT_PATH=gs://v4-demo/ #<your_GCS_folder_for_results>
 ```
-* You should be able to to see results like this: ![image](https://github.com/user-attachments/assets/c33010a6-e109-411e-8fb5-afb4edb3fa72)
-
 
 5. Switch back to your XPK folder and run Llama2-7B workload
 ```
@@ -101,7 +101,7 @@ python3 xpk.py workload create \
 --cluster ${CLUSTER_NAME} \
 --workload ${WORKLOAD_NAME} \
 --tpu-type=${TPU_TYPE} \
---num-slices=${NUM_SLIECES} \
+--num-slices=${NUM_SLICES} \
 --docker-image=${LOCAL_IMAGE_NAME} \
 --command "\
    python MaxText/train.py MaxText/configs/base.yml\
@@ -116,7 +116,7 @@ python3 xpk.py workload create \
    skip_first_n_steps_for_profiler=5\
    steps=10"
 ```
-* You should see the output similar to this: ![image](https://github.com/user-attachments/assets/8ffa72cb-61b1-4f87-a01e-f80d2330341a)
+* You should see the output similar to this: ![image](https://github.com/user-attachments/assets/9b2828f6-7302-459a-a344-3a49e18714a7)
 * Here is an example of the output for your GCS folder: ![image](https://github.com/user-attachments/assets/e6a5d808-d401-4854-9630-ad79bccd3044)
 
 6. [Optional] If you need to delete any of your workload, you can run the following command:
