@@ -86,7 +86,7 @@ Update values in /helm_context/values.yaml.
 
 
 - You **must** modify the workload.image string value to match the one built earlier. Look for "EDIT THIS".
-- You **must** modify the workload.gcsBucketForDataCataPath string value to match desired existing bucket. Look for "EDIT THIS".
+- You **must** modify the workload.gcsBucketForDataCataPath string value to match desired existing bucket. This bucket must be in the same region as the cluster. Look for "EDIT THIS".
 - You may also settings like the number of gpus or which workload image to use. 
 
 
