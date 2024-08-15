@@ -87,7 +87,7 @@ export CLUSTER_NAME=v4-demo #<your_cluster_name>
 export WORKLOAD_NAME=llam2-7b-test #<your_workload_name>
 export TPU_TYPE=v4-128 #<your TPU Type>
 export NUM_SLIECES=1 #<number of TPU node-pools you want to use>
-export LOCAL_IMAGE_NAME=gcr.io/tpu-prod-env-multipod/${USER}_runner
+export LOCAL_IMAGE_NAME=gcr.io/${PROJECT}/${USER}_runner
 export OUTPUT_PATH=gs://v4-demo/ #<your_GCS_folder_for_results>
 ```
 * You should be able to to see results like this: ![image](https://github.com/user-attachments/assets/c33010a6-e109-411e-8fb5-afb4edb3fa72)
