@@ -42,13 +42,29 @@ cd /path/to/reproducibility/Training/A3Mega/Llama2-7B-NeMo
 ```
 
 
+If using gcloud, register gcloud as a Docker credential helper:
+
+
+```
+gcloud auth configure-docker <registries>
+```
+
+
+Example:
+
+
+```
+gcloud auth configure-docker us-docker.pkg.dev
+```
+
+
 Build and push docker image:
 
 
 ```
 cd docker
-docker build -t <image_name>:<image_tag> -f nemo_example.Dockerfile .
-docker push /address/to/artifact_registy/<image_name>:<image_tag>
+docker build -t <regristry_path_image_name>:<image_tag> -f nemo_example.Dockerfile .
+docker push <registry_path_image_name>:<image_tag>
 cd ..
 ```
 
@@ -58,8 +74,8 @@ Example:
 
 ```
 cd docker
-docker build -t nemo_test:24.05 -f nemo_example.Dockerfile .
-docker push us-east4-docker.pkg.dev/supercomputer-testing/reproducibility/nemo:24.05
+docker build -t us-east4-docker.pkg.dev/supercomputer-testing/reproducibility/nemo_test:24.05 -f nemo_example.Dockerfile .
+docker push us-east4-docker.pkg.dev/supercomputer-testing/reproducibility/nemo_test:24.05
 cd ..
 ```
 
