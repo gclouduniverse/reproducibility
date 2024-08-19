@@ -83,7 +83,13 @@ bash docker_build_dependency_image.sh MODE=stable DEVICE=tpu
 bash docker_upload_runner.sh CLOUD_IMAGE_NAME=${USER}_runner
 ```
 
-4. Specify your workload configs
+4. Create your GCS bucket
+```
+GCS_PATH=gs://v4-demo #<your_GCS_folder_for_results>
+gcloud storage buckets create ${GCS_PATH}  --project ${PROJECT}
+```
+
+5. Specify your workload configs
 ```
 export CLUSTER_NAME=v4-demo #<your_cluster_name>
 export WORKLOAD_NAME=llam2-7b-test #<your_workload_name>
@@ -93,7 +99,7 @@ export LOCAL_IMAGE_NAME=gcr.io/${PROJECT}/${USER}_runner
 export OUTPUT_PATH=gs://v4-demo/ #<your_GCS_folder_for_results>
 ```
 
-5. Switch back to your XPK folder and run Llama2-7B workload
+6. Switch back to your XPK folder and run Llama2-7B workload
 ```
 cd ../ #Make sure you are in the XPK folder
 
@@ -119,7 +125,7 @@ python3 xpk.py workload create \
 * You should see the output similar to this: ![image](https://github.com/user-attachments/assets/9b2828f6-7302-459a-a344-3a49e18714a7)
 * Here is an example of the output for your GCS folder: ![image](https://github.com/user-attachments/assets/e6a5d808-d401-4854-9630-ad79bccd3044)
 
-6. [Optional] If you need to delete any of your workload, you can run the following command:
+7. [Optional] If you need to delete any of your workload, you can run the following command:
 ```
 export WORKLOAD_NAME_TO_DELETE=llam2-7b-test
 
