@@ -1,5 +1,35 @@
 # Instructions for training Llama2-7B-Maxtext on TPU v4
 
+## TPU concepts
+
+<table>
+  <tr>
+    <th>TPU name on Cloud&Borg</th>
+    <th>Example TPU Type</th>
+    <th>TPU software version</th>
+    <th>Cores : Chips</th>
+  </tr>
+  <tr>
+    <td>V4/pufferfish</td>
+    <td>v4-8</td>
+    <td>tpu-ubuntu2204-base</td>
+    <td>2:1</td>
+  </tr>
+  <tr>
+    <td>V5e/Viperlite POD</td>
+    <td>v5litepod-16</td>
+    <td>v2-alpha-tpuv5-lite</td>
+    <td>1:1</td>
+  <tr>
+    <td>V5p/Viperfish</td>
+    <td>v5p-8</td>
+    <td>v2-alpha-tpuv5</td>
+    <td>2:1</td>
+  </tr>
+</table>
+
+* Note: On cloud, we use <TPU_version>-<Core_number> for TPU type. For example, if we create v4-8 TPU, 8 is the number of cores, and it uses 4 chips, since Cores:Chips is 2:1 for v4.
+
 ## Initialization
 1. Run the following commands to initialize the project and zone.
 ```
