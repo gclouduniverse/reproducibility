@@ -1,0 +1,58 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+targetPlatform: "gke"
+#queue: "multislice-queue"
+
+volumes:
+  # The VM host path for SSDs is assumed at /mnt/stateful_partition/kube-ephemeral-ssd
+  ssdMountPath: "/ssd"
+
+workload:
+  # This should be the image built and pushed to the registry (EDIT THIS)
+  image: "/address/to/image/built/and/uploaded/<image_name>:<image_tag>"
+
+  torchDistributedTarget: "/opt/NeMo/examples/nlp/language_modeling/megatron_gpt_pretraining.py"
+
+  # It will be mounted to /nfs on container startup using GCS fuse (EDIT THIS)
+  gcsBucketForDataCataPath: <bucket_name>
+
+  gpus: 256 # This should be one of: {<= 8,  multiple of 8}
+
+  # If not 'null', launches a Tensorboard server on first node. By design, the job will then not exit on first node.
+  # This is primarly intended for debugging purposes, when a shared file-system or external Tensorboard is unavailable.  
+  embeddedTensorboardTarget: null
+
+network:
+  stack: "tcpxo" # one of {"tcp", "tcpx", "tcpxo"}
+
+  daemonVersion: "us-docker.pkg.dev/gce-ai-infra/gpudirect-tcpxo/tcpgpudmarxd-dev:v1.0.8"
+  pluginVersion: "us-docker.pkg.dev/gce-ai-infra/gpudirect-tcpxo/nccl-plugin-gpudirecttcpx-dev:v1.0.1"
+    
+
+  ncclSettings:
+  - name: TRAINING_FILENAME
+    value: "mixtral-8x7b-nvidia-configs.yaml"
+  - name: IMAGE_VERSION
+    value: "24.05"
+    
+  - name: NCCL_DEBUG
+    value: "VERSION"
+  - name: NCCL_ALGO
+    value: "Ring,Tree"
+
+  # The following NCCL settings are recommended for TCPxo only (but tunable):
+  - name: NCCL_MIN_NCHANNELS
+    value: "4"
+
