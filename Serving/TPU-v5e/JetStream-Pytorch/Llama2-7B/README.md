@@ -30,12 +30,12 @@ source install_everything.sh
 ```
 
 ## Step 3: Get the checkpoint and run conversion
+```bash
 # The commands may be required for gsutil
 # sudo apt-get install gcc python3-dev python3-setuptools
 # sudo pip3 uninstall crcmod
 # sudo pip3 install --no-cache-dir -U crcmod
 
-```bash
 export META_CHECKPOINT_PATH=gs://maxtext-llama/llama2-7b/meta-ckpt
 export input_ckpt_dir=~/ckpt/llama2-7b/original
 mkdir -p ${input_ckpt_dir}
