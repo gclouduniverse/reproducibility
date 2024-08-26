@@ -15,6 +15,7 @@ git checkout main
 
 ## Step 2: Setup JetStream and MaxText
 ```bash
+cd ~
 sudo apt install python3.10-venv
 python -m venv venv-maxtext
 source venv-maxtext/bin/activate
