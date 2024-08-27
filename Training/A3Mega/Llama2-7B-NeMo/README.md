@@ -123,7 +123,7 @@ vi nemo-configurations/llama2-7b-16gpus-bf16.yaml
 
 **Set Configuration File**
 
-In order for this workflow to function, in the ```helm-context``` directory, there must exist a **_select-configuration.yaml_** file. This can be achieved by copying an appropriate file to this location.
+In order for this workflow to function, in the ```helm-context``` directory, there must exist a **_select-configuration.yaml_** file. This can be achieved by copying an appropriate file to this location. 
 
 
 ```
