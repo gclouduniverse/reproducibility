@@ -32,7 +32,8 @@ workload:
   # It will be mounted to /nfs on container startup using GCS fuse (EDIT THIS)
   gcsBucketForDataCataPath: <bucket_name>
 
-  gpus: 16 # This should be one of: {<= 8,  multiple of 8}
+  # (EDIT THIS TO MATCH CHOSEN CONFIGURATION, can be one of {16,128,256,512,1024})
+  gpus: 16
   arguments:
   # These argument name will be prefixed with '+' (see https://hydra.cc/docs/advanced/override_grammar/basic/)
   - name: "exp_manager.explicit_log_dir"
