@@ -104,6 +104,8 @@ Update values in /helm_context/values.yaml.
 - You **must** modify the workload.image string value to match the one built earlier. Look for "EDIT THIS".
 - You **must** modify the workload.gcsBucketForDataCataPath string value to match desired existing bucket. This bucket must be in the same region as the cluster. Look for "EDIT THIS".
 - You may also settings like the number of gpus or which workload image to use. 
+- **IMPORTANT** Based on the number of GPUs specified by the file name of the nemo configuration yaml file, such as nemo-configurations/llama2-7b-256gpus-bf16.yaml, you **must** set gpus to match in values.yaml. It will be marked with "EDIT THIS".
+
 
 
 ```

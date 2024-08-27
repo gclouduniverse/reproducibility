@@ -18,7 +18,7 @@ run:
   time_limit: 0:10:00
   dependency: singleton
 trainer:
-  devices: 1024
+  devices: 8
   accelerator: gpu
   precision: bf16
   logger: false
