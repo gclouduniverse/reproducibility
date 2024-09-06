@@ -95,6 +95,7 @@ gcloud storage buckets create ${GCS_PATH}  --project ${PROJECT}
 ```
 export CLUSTER_NAME=v5p-demo #<your_cluster_name>
 export WORKLOAD_NAME=llam2-7b-test #<your_workload_name>
+export RUN_NAME=llama2-7b-run #<your_run_name>
 export TPU_TYPE=v5p-512 #<your TPU Type>
 export NUM_SLICES=1 #<number of TPU node-pools you want to use>
 export LOCAL_IMAGE_NAME=gcr.io/${PROJECT}/${USER}_runner
@@ -112,17 +113,7 @@ python3 xpk.py workload create \
 --num-slices=${NUM_SLICES} \
 --docker-image=${LOCAL_IMAGE_NAME} \
 --command "\
-   python MaxText/train.py MaxText/configs/base.yml\
-   model_name=llama2-7b\
-   base_output_directory=$OUTPUT_PATH\
-   dataset_type=synthetic\
-   tokenizer_path=assets/tokenizer.llama2\
-   per_device_batch_size=16\
-   enable_checkpointing=false\
-   gcs_metrics=true\
-   profiler=xplane\
-   skip_first_n_steps_for_profiler=5\
-   steps=10"
+   bash MaxText/configs/v5p/llama2_7b.sh RUN_NAME=$RUN_NAME OUTPUT_PATH=$OUTPUT_PATH"
 ```
 
 7. [Optional] If you need to delete any of your workload, you can run the following command:
