@@ -99,7 +99,12 @@ python3 ../xpk.py workload create \
 --tpu-type=${TPU_TYPE} \
 --num-slices=${NUM_SLICES} \
 --docker-image=${LOCAL_IMAGE_NAME} \
---command "python3 MaxText/train.py MaxText/configs/base.yml run_name=$RUN_NAME model_name=gpt3-175b base_output_directory=$OUTPUT_PATH enable_checkpointing=false async_checkpointing=false steps=20 per_device_batch_size=4 ici_data_parallelism=8 ici_fsdp_parallelism=8 ici_tensor_parallelism=8 remat_policy=full attention=flash quantization=int8 dataset_type=synthetic tokenizer_path=gs://mlperf-llm-public2/vocab/c4_en_301_5Mexp2_spm.model"
+--command "python3 MaxText/train.py MaxText/configs/base.yml run_name=$RUN_NAME model_name=gpt3-175b base_output_directory=$OUTPUT_PATH enable_checkpointing=false async_checkpointing=false steps=20 per_device_batch_size=4 ici_data_parallelism=8 ici_fsdp_parallelism=8 ici_tensor_parallelism=8 remat_policy=full attention=flash quantization=int8 dataset_type=synthetic"
+```
+
+From your workload logs, you should start seeing step time logs like the following:
+```
+completed step: 2, seconds: 22.197, TFLOP/s/device: 397.246, Tokens/s/device: 369.059, total_weights: 4194304, loss: 0.000
 ```
 
 7. [Optional] If you need to delete your workload, you can run the following command:
