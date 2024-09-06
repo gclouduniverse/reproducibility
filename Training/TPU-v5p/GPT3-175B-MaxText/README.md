@@ -84,7 +84,7 @@ gcloud storage buckets create ${GCS_PATH}  --project ${PROJECT}
 export CLUSTER_NAME=v5p-demo #<your_cluster_name>
 export WORKLOAD_NAME=gpt3-175b-test #<your_workload_name>
 export RUN_NAME=gpt3-175b-run #<your_run_name>
-export TPU_TYPE=v5p-512 #<your TPU Type>
+export TPU_TYPE=v5p-1024 #<your TPU Type>
 export NUM_SLICES=1 #<number of TPU node-pools you want to use>
 export LOCAL_IMAGE_NAME=gcr.io/${PROJECT}/${USER}_runner
 export OUTPUT_PATH=gs://v5p-demo/ #<your_GCS_folder_for_results>
@@ -99,7 +99,7 @@ python3 ../xpk.py workload create \
 --tpu-type=${TPU_TYPE} \
 --num-slices=${NUM_SLICES} \
 --docker-image=${LOCAL_IMAGE_NAME} \
---command "python3 MaxText/train.py MaxText/configs/base.yml run_name="$RUN_NAME" model_name=gpt3-175b base_output_directory="${OUTPUT_PATH} enable_checkpointing=false async_checkpointing=false steps=20 per_device_batch_size=4 ici_data_parallelism=8 ici_fsdp_parallelism=8 ici_tensor_parallelism=8 remat_policy=full attention=flash quantization=int8 dataset_type=synthetic tokenizer_path=gs://mlperf-llm-public2/vocab/c4_en_301_5Mexp2_spm.model"
+--command "python3 MaxText/train.py MaxText/configs/base.yml run_name=$RUN_NAME model_name=gpt3-175b base_output_directory=$OUTPUT_PATH enable_checkpointing=false async_checkpointing=false steps=20 per_device_batch_size=4 ici_data_parallelism=8 ici_fsdp_parallelism=8 ici_tensor_parallelism=8 remat_policy=full attention=flash quantization=int8 dataset_type=synthetic tokenizer_path=gs://mlperf-llm-public2/vocab/c4_en_301_5Mexp2_spm.model"
 ```
 
 7. [Optional] If you need to delete your workload, you can run the following command:
