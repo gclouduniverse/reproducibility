@@ -2,45 +2,56 @@
 
 This documents present steps to run Mixtral-8x7B [MaxText](https://github.com/google/maxtext) workload through [XPK](https://github.com/google/xpk/blob/main/README.md) tool.
 
-Login to gcloud, set XPK cluster project and zone.
+## XPK setup
 
-```
-gcloud auth application-default login
-gcloud config set project <project_id>
-gcloud config set compute/zone <cluster_zone>
-```
+Please follow this [link](https://github.com/gclouduniverse/reproducibility/tree/main/Training/TPU-v5p/XPK_README.md) to create your GKE cluster with XPK.
 
-Build a local docker image with default name `maxtext_base_image`.
 
+## Run script
+
+1. Clone [Maxtext](https://github.com/google/maxtext) repo.
 ```
 git clone https://github.com/google/maxtext.git
-cd maxtext
-bash docker_build_dependency_image.sh DEVICE=tpu
 ```
 
-Install XPK and create GKE cluster.
+2. Build a local docker image with default name `maxtext_base_image`.
+
+```
+cd maxtext
+bash docker_build_dependency_image.sh MODE=stable DEVICE=tpu
+```
+
+3. (Optional) Install XPK if you haven't set it up.
 
 ```
 pip install xpk
-xpk cluster create --cluster <cluster_name> --tpu-type=<tpu_type> --num-slices=<num_slices>
 ```
 
-Run workload in the maxtext github root directory.
+4. Specify workload configs.
 
 ```
-export BASE_OUTPUT_DIR=gs://output_bucket/
+export CLUSTER_NAME=v5p-demo #<your cluster name>
+export WORKLOAD_NAME=Mixtral-8x7b-test #<your workload name>
+export RUN_NAME=Mixtral-8x7b-run #<your run name>
+export TPU_TYPE=v5p-128 #<your TPU Type>
+export NUM_SLICES=1 #<number of TPU node-pools you want to use>
+export OUTPUT_PATH=gs://v5p-demo/ #<your GCS folder for results>
+```
 
+5. Copy `scripts/run_mixtral-8x7b.sh` script, paste it to `MaxText/configs` folder, and run workload in the maxtext github root directory.
+
+```
 xpk workload create \
---cluster <cluster_name> \
+--cluster ${CLUSTER_NAME} \
+--workload ${WORKLOAD_NAME} \
+--tpu-type=${TPU_TYPE} \
+--num-slices=${NUM_SLICES} \
 --base-docker-image maxtext_base_image \
---workload ${USER}-mixtral-8x7b \
---tpu-type=<tpu_type> \
---num-slices=<num_slices>  \
---command "python3 MaxText/train.py MaxText/configs/base.yml run_name=<experiment_run_name> per_device_batch_size=12 model_name=mixtral-8x7b steps=10 dtype=bfloat16 weight_dtype=bfloat16 max_target_length=4096 attention=flash dataset_type=synthetic tokenizer_path=assets/tokenizer.mistral"
+--command "bash MaxText/configs/run_mixtral-8x7b.sh RUN_NAME=${RUN_NAME} OUTPUT_PATH=${OUTPUT_PATH}"
 ```
 
-Clean up the GKE cluster.
+6. (Optional) Clean up the GKE cluster.
 
 ```
-xpk cluster delete --cluster <cluster_name>
+xpk cluster delete --cluster ${CLUSTER_NAME}
 ```
