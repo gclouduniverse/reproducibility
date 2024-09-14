@@ -1,4 +1,4 @@
-# User Guide: Running HuggingFace Mixtral Training on Cloud TPUs
+# Instructions for training Stable Diffusion 2 on TPU v5p
 
 
 This user guide provides a concise overview of the essential steps required to run StableDiffusion 2.0 base training on Cloud TPUs.
