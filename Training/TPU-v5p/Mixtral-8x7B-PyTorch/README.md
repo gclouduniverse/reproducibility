@@ -1,12 +1,12 @@
-# User Guide: Running HuggingFace Mixtral Training on Cloud TPUs
+# Instructions for training  Mixtral-8X7B on TPU v5p
 
 
-This user guide provides a concise overview of the essential steps required to run HuggingFace (HF) Mixtral training on Cloud TPUs.
+This user guide provides a concise overview of the essential steps required to run  Mixtral-8X7B training on Cloud TPUs.
 
 
 ## Environment Setup
 
-The following setup assumes to run the training job with Mixtral 7 x 8B on GCE TPUs. Please follow corresponding TPU generation's user guide to setup the GCE TPUs. For GKE users, most of the commands below also apply.
+The following setup assumes to run the training job with Mixtral-8X7B base on GCE TPUs using the docker image from this registery (us-central1-docker.pkg.dev/tpu-pytorch/docker/reproducibility/mixtral), the docker image uses the pytorch and torch_xla  with all the package dependency installed. Please follow corresponding TPU generation's user guide to setup the GCE TPUs first. All the command below should run from your own machine (not the TPU host you created).
 
 ### Setup Environment of Your TPUs
 Please replace all your-* with your TPUs' information.
@@ -16,133 +16,29 @@ export ZONE=your-tpu-zone
 export PROJECT=your-tpu-project
 ```
 
-### HF Mixtral 7 x 8B Environment Setup
-
-Here both PyTorch and PyTorch/XLA nightly are used with our fork of HuggingFace.
+### Simple Run Command
+1. git clone and navigate to this README repo and run training script:
+```bash
+git clone  --depth 1 https://github.com/gclouduniverse/reproducibility.git/
+cd reproducibility/Training/TPU-v5p/Llama2-7B-Pytorch-PyTorch
 ```
-gcloud alpha compute tpus tpu-vm ssh ${TPU_NAME} \
---zone ${ZONE} \
---project ${PROJECT} \
---worker=all \
---command='
-# Step 1: install torch, torch-xla, libtpu, pallas
-pip3 install --pre torch --index-url https://download.pytorch.org/whl/nightly/cpu
-pip3 install https://storage.googleapis.com/pytorch-xla-releases/wheels/tpuvm/torch_xla-nightly-cp310-cp310-linux_x86_64.whl
-pip3 install torch_xla[tpu] -f https://storage.googleapis.com/libtpu-releases/index.html
-pip3 install torch_xla[pallas] -f https://storage.googleapis.com/jax-releases/jax_nightly_releases.html -f https://storage.googleapis.com/jax-releases/jaxlib_nightly_releases.html
-
-# Step 2: install HF
-git clone -b alanwaketan/moe https://github.com/pytorch-tpu/transformers.git
-cd transformers
-pip3 install git+file://$PWD
-pip3 install accelerate datasets evaluate scikit-learn huggingface-hub
-'
+2. Edit `env.sh` to add the hugging face token and/or setup the training parameters.
+```bash
+HF_TOKEN=hf_***
 ```
-
-The next step is to sign into HF such that you can get accesses to the tokenizer or model checkpoints. Please replace `your_token` with your HF token.
+3. Run the training script:
+```bash
+bash benchmark.sh
 ```
-gcloud alpha compute tpus tpu-vm ssh ${TPU_NAME} \
---zone ${ZONE} \
---project ${PROJECT} \
---worker=all \
---command='
-export PATH=$PATH:/home/$USER/.local/bin
-huggingface-cli login --token your_token
-'
+`benchmark.sh` script will upload 1) environment parameters in `env.sh`, 2) model related config in `config.json`, `fsdp_config.json`, 3) docker launch script in `host.sh` and 4) python training command in `train.sh` into all TPU workers, and starts the training afterwards. When all training steps complete, it will print out the training metrics or each worker as below in terminal:
 ```
-
-The next step for HF setup is to copy your [Mixtral config](https://huggingface.co/mistralai/Mixtral-8x7B-v0.1) into the TPU VM.
+[worker :0] ***** train metrics *****
+[worker :0]   epoch                    =        0.3125
+[worker :0]   total_flos               = 10915247040GF
+[worker :0]   train_loss               =         9.278
+[worker:0]   train_runtime            =    0:46:45.60
+[worker :0]   train_samples            =         32816
+[worker :0]   train_samples_per_second =          3.65
+[worker :0]   train_steps_per_second   =         0.007
 ```
-gcloud compute tpus tpu-vm scp mixtral87.json $TPU_NAME:~/config.json --worker all --project $PROJECT --zone=$ZONE
-```
-
-The last step for HF setup is to copy your fsdp_config.json into the TPU VM.
-```
-{
-    "fsdp_transformer_layer_cls_to_wrap": [
-        "MixtralDecoderLayer"
-    ],
-    "xla": true,
-    "xla_fsdp_v2": true,
-    "xla_fsdp_grad_ckpt": true
-}
-
-```
-And the command to copy the config.
-```
-gcloud compute tpus tpu-vm scp fsdp_config.json $TPU_NAME:~/fsdp_config.json --worker all --project $PROJECT --zone=$ZONE
-```
-
-## Steps to Run HF Mixtral 8 x 7B
-Following is the gcloud ssh command to run the training job from the host:
-```
-gcloud alpha compute tpus tpu-vm ssh ${TPU_NAME} \
---zone ${ZONE} \
---project ${PROJECT} \
---worker=all \
---command='
-# Setup envs
-export PJRT_DEVICE=TPU
-export XLA_USE_SPMD=1
-export XLA_IR_DEBUG=1
-export XLA_HLO_DEBUG=1
-
-export PROFILE_EPOCH=0
-export PROFILE_STEP=3
-export PROFILE_DURATION_MS=20000
-export PROFILE_LOGDIR=/tmp/home/
-
-# Run
-cd transformers
-python3 examples/pytorch/language-modeling/run_clm.py \
-  --dataset_name wikitext \
-  --dataset_config_name wikitext-2-raw-v1 \
-  --per_device_train_batch_size 32 \
-  --do_train \
-  --output_dir /tmp/test-clm \
-  --overwrite_output_dir \
-  --config_name ~/config.json \
-  --cache_dir /tmp \
-  --tokenizer_name mistralai/Mixtral-8x7B-v0.1 \
-  --block_size 4096 \
-  --optim adafactor \
-  --save_strategy no \
-  --logging_strategy no \
-  --fsdp "full_shard" \
-  --fsdp_config ~/fsdp_config.json \
-  --torch_dtype bfloat16 \
-  --dataloader_drop_last yes \
-  --flash_attention \
-  --max_steps 10 \
-  --gmm
-'
-```
-
-
-### Environment Envs Explained
-
-
-
-*   `PJRT_DEVICE`: Specify the XLA device.
-*   `XLA_USE_SPMD`: Turn on GSPMD.
-*   `XLA_IR_DEBUG`: Capture Python stack trace in Lazy IRs.
-*   `XLA_HLO_DEBUG`: Capture Python stack trace in HLOs.
-*   `PROFILE_EPOCH`: Specify which epoch to start taking the profile.
-*   `PROFILE_STEP`: Specify which step to start taking the profile.
-*   `PROFILE_DURATION_MS`: Specify how long the profiling will last.
-*   `PROFILE_LOGDIR`: Specify where to put the profiling results.
-
-
-### HF Mixtral Arguments Explained
-
-
-
-*   `--flash_attention`: [bool] Enable Pallas FlashAttention. Default: False.
-*   `--gmm`: [bool] Enable Pallas Megablox/Gmm. Default: False.
-*   `--spmd_2d_sharding`: [int] Enable 2D sharding for Mixtral. This conflicts with FSDP. Default: 0.
-*   `--static`: [bool] Enable baseline static approach. This produces much worse performance than gmm. Default: False.
-*   `--gmm_stack`: [bool] Enable a debug mode gmm. This produces much worse performance than gmm. Default: False.
-*   `--per_device_train_batch_size`: [int] Specify the global batch size. GSPMD treats the program as a singel device program.
-
-## How to measure the step time?
-A profile will be captured in `/tmp/home/`. Just use TensorBoard to open the profile and measure the step time from the "Trace View."
+In addition,  it will copy back the trained model output under *output/*.
