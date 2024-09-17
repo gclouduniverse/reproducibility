@@ -25,10 +25,13 @@ cd reproducibility/Training/TPU-v5p/Llama2-7B-Pytorch
 ```bash
 # add your hugging face token
 HF_TOKEN=hf_***
+```
+3. Edit `host.sh` to add the docker image URL if default docker image is not accessible to you.
+```bash
 # docker image URL to use for the training
 DOCKER_IMAGE=us-central1-docker.pkg.dev/tpu-pytorch/docker/reproducibility/llama2@sha256:3fda2382a36c8a7c39f8838f9a1abde3a161fd47283b052d04fa090e3ee210f5
 ```
-3. Run the training script:
+4. Run the training script:
 ```bash
 bash benchmark.sh
 ```

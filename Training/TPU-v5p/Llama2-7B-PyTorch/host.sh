@@ -1,4 +1,7 @@
 #!/bin/bash
+
+DOCKER_IMAGE="us-central1-docker.pkg.dev/tpu-pytorch/docker/reproducibility/llama2@sha256:3fda2382a36c8a7c39f8838f9a1abde3a161fd47283b052d04fa090e3ee210f5"
+
 worker_id=$(curl -s "http://metadata.google.internal/computeMetadata/v1/instance/attributes/agent-worker-number" -H 'Metadata-Flavor: Google')
 
 cat >> /dev/null <<EOF

@@ -1,7 +1,6 @@
 # Uncomment below to set the Huggingface token
 # HF_TOKEN=hf_***
 
-DOCKER_IMAGE=us-central1-docker.pkg.dev/tpu-pytorch/docker/reproducibility/llama2@sha256:3fda2382a36c8a7c39f8838f9a1abde3a161fd47283b052d04fa090e3ee210f5
 PJRT_DEVICE=TPU
 XLA_IR_DEBUG=1
 XLA_HLO_DEBUG=1
