@@ -14,7 +14,7 @@ stdbuf -oL bash <<-PIPE_EOF 2>&1 | sed "s/^/[worker $slice_id:$worker_id] /g" | 
   gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
   # Kill any running benchmarks
   docker kill $USER-test
-  docker pull us-central1-docker.pkg.dev/tpu-pytorch/docker/development/pytorch-tpu-diffusers:v1
+  docker pull $DOCKER_IMAGE
   docker run --rm \
     --name $USER-test \
     --privileged \
@@ -23,7 +23,7 @@ stdbuf -oL bash <<-PIPE_EOF 2>&1 | sed "s/^/[worker $slice_id:$worker_id] /g" | 
     --shm-size=16G \
     --net host \
     -u root \
-    --entrypoint /bin/bash us-central1-docker.pkg.dev/tpu-pytorch/docker/development/pytorch-tpu-diffusers:v1 \
+    --entrypoint /bin/bash $DOCKER_IMAGE \
     /tmp/home/train.sh
 
 PIPE_EOF

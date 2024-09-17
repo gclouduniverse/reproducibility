@@ -1,4 +1,5 @@
 #!/bin/bash
+DOCKER_IMAGE=us-central1-docker.pkg.dev/tpu-pytorch/docker/development/pytorch-tpu-diffusers:v1
 XLA_DISABLE_FUNCTIONALIZATION=1
 PROFILE_DIR=/tmp/home/profile/
 CACHE_DIR=/tmp/home/xla_cache

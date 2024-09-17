@@ -6,7 +6,7 @@ This user guide provides a concise overview of the essential steps required to r
 
 ## Environment Setup
 
-The following setup assumes to run the training job with StableDiffusion 2.0 base on GCE TPUs using the docker image from [this registery]( us-central1-docker.pkg.dev/tpu-pytorch/docker/development/pytorch-tpu-diffusers:v1), the docker image uses the pytorch and torch_xla nightly build from 09/05 and has all the package dependency installed. It cloned the git repo from [https://github.com/pytorch-tpu/diffusers (commit f08dc9)](https://github.com/pytorch-tpu/diffusers/tree/f08dc92db9d7fd7d8d8ad4efcdfee675e2cd26f2) in order to run hugging face stable diffusion on TPU. Please follow corresponding TPU generation's user guide to setup the GCE TPUs first. All the command below should run from your own machine (not the TPU host you created).
+The following setup assumes to run the training job with StableDiffusion 2.0 base on GCE TPUs using the docker image from this registery (us-central1-docker.pkg.dev/tpu-pytorch/docker/development/pytorch-tpu-diffusers:v1), the docker image uses the pytorch and torch_xla nightly build from 09/05 and has all the package dependency installed. It cloned the git repo from [https://github.com/pytorch-tpu/diffusers (commit f08dc9)](https://github.com/pytorch-tpu/diffusers/tree/f08dc92db9d7fd7d8d8ad4efcdfee675e2cd26f2) in order to run hugging face stable diffusion on TPU. Please follow corresponding TPU generation's user guide to setup the GCE TPUs first. All the command below should run from your own machine (not the TPU host you created).
 
 ### Setup Environment of Your TPUs
 Please replace all your-* with your TPUs' information.
@@ -19,7 +19,7 @@ export PROJECT=your-tpu-project
 ### Simple Run Command
 git clone and navigate to this README repo and run training script:
 ```bash
-git clone  --depth 1 https://github.com/gclouduniverse/reproducibility.git/
+git clone --depth 1 https://github.com/gclouduniverse/reproducibility.git
 cd reproducibility/Training/TPU-v5p/Diffusion-2-PyTorch
 bash benchmark.sh
 ```
@@ -27,7 +27,7 @@ bash benchmark.sh
 ```
 [worker :x] Average step time: ...
 ```
-, which tells the average step time for each batch run of each worker. In addition,  it will copy the profile back to current folder under *profile/* and the trained model in safetensor format under *output/*.
+, which tells the average step time for each batch run of each worker. In addition,  it will copy the profile back to current folder under *profile/* and the trained model in safetensor format under *output/*. Use TensorBoard to open the profile and measure the step time from the "Trace View.".
 
 
 ### Environment Envs Explained
