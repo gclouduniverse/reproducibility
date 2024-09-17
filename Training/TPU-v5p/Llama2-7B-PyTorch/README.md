@@ -5,7 +5,7 @@ This user guide provides a concise overview of the essential steps required to r
 
 ## Environment Setup
 
-The following setup assumes to run the training job with llama2-7b on GCE TPUs using the docker image from this registery (us-central1-docker.pkg.dev/tpu-pytorch/docker/reproducibility/llama2@sha256:3fda2382a36c8a7c39f8838f9a1abde3a161fd47283b052d04fa090e3ee210f5), the docker image uses the pytorch and torch_xla nightly build from 09/17/2024 and installed with all the package dependency needed to run the model training. In order to run hugging face llama2-7b on TPU. Please follow corresponding TPU generation's user guide to setup the GCE TPUs first. All the command below should run from your own machine (not the TPU host you created).
+The following setup assumes to run the training job with llama2-7b on GCE TPUs using the docker image from this registery (`us-central1-docker.pkg.dev/tpu-pytorch/docker/reproducibility/llama2@sha256:3fda2382a36c8a7c39f8838f9a1abde3a161fd47283b052d04fa090e3ee210f5`), the docker image uses the pytorch and torch_xla nightly build from 09/17/2024 and installed with all the package dependency needed to run the model training. In order to run hugging face llama2-7b on TPU. Please follow corresponding TPU generation's user guide to setup the GCE TPUs first. All the command below should run from your own machine (not the TPU host you created).
 
 ### Setup Environment of Your TPUs
 Please replace all your-* with your TPUs' information.
@@ -29,8 +29,21 @@ HF_TOKEN=hf_***
 ```bash
 bash benchmark.sh
 ```
-`benchmark.sh` script will upload 1) environment parameters in `env.sh`, 2) model related config in `config.json`, `fsdp_config.json`, 3) docker launch script in `host.sh` and 4) python training command in `train.sh` into all TPU workers, and starts the training afterwards. After the training completes, it will copy the output back under folder *output/*.
 
+`benchmark.sh` script will upload 1) environment parameters in `env.sh`, 2) model related configs in `config.json`, `fsdp_config.json`, 3) docker launch script in `host.sh` and 4) python training command in `train.sh` into all TPU workers, and starts the training afterwards. After the training completes, you shall see the train metrics report like below in the terminal for each TPU worker. The script will also copy back the trained model under folder *output/*.
+```
+[worker :11] [INFO|modelcard.py:450] 2024-09-17 21:45:24,200 >> Dropping the following result as it does not have all the necessary fields:
+[worker :11] {'task': {'name': 'Causal Language Modeling', 'type': 'text-generation'}, 'dataset': {'name': 'wikitext wikitext-103-raw-v1', 'type': 'wikitext', 'args': 'wikitext-103-raw-v1'}}
+[worker :11] {'train_runtime': 808.7671, 'train_samples_per_second': 12.661, 'train_steps_per_second': 0.025, 'train_loss': 9.420475006103516, 'epoch': 0.31}
+[worker :11] ***** train metrics *****
+[worker :11]   epoch                    =       0.3077
+[worker :11]   total_flos               = 1548596160GF
+[worker :11]   train_loss               =       9.4205
+[worker :11]   train_runtime            =   0:13:28.76
+[worker :11]   train_samples            =        33541
+[worker :11]   train_samples_per_second =       12.661
+[worker :11]   train_steps_per_second   =        0.025
+```
 
 
 ### Torch/XLA General Environment Envs Explained
