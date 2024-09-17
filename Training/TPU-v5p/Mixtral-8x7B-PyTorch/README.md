@@ -139,10 +139,13 @@ cd reproducibility/Training/TPU-v5p/Mixtral-8x7B-PyTorch
 ```bash
 # add your hugging face token
 HF_TOKEN=hf_***
+```
+3. Edit `host.sh` to add the docker image URL if default docker image is not accessible to you.
+```bash
 # docker image URL to use for the training
 DOCKER_IMAGE=us-central1-docker.pkg.dev/tpu-pytorch/docker/reproducibility/mixtral@sha256:1e9024d13e53bdadc13d7a695d8fbe52b95a78cfae2a101da8a9d8fc94b1c96b
 ```
-3. Run the training script:
+4. Run the training script:
 ```bash
 bash benchmark.sh
 ```
