@@ -19,7 +19,7 @@ export PROJECT=your-tpu-project
 ### Simple Run Command
 git clone and navigate to this README repo and run training script:
 ```bash
-git clone  --depth 1 https://github.com/gclouduniverse/reproducibility.git
+git clone --depth 1 https://github.com/gclouduniverse/reproducibility.git
 cd reproducibility/Training/TPU-v5p/Diffusion-2-PyTorch
 bash benchmark.sh
 ```
