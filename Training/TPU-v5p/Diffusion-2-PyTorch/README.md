@@ -23,11 +23,15 @@ git clone --depth 1 https://github.com/gclouduniverse/reproducibility.git
 cd reproducibility/Training/TPU-v5p/Diffusion-2-PyTorch
 bash benchmark.sh
 ```
-`benchmark.sh` script will upload 1) environment parameters in `env.sh`,  2) docker launch script in `host.sh` and 3) python training command in `train.sh` into all TPU workers, and starts the training afterwards. When all training steps complete, it will print out the average step time. You shall see the performance metric in the terminal as
+`benchmark.sh` script will upload 1) environment parameters in `env.sh`,  2) docker launch script in `host.sh` and 3) python training command in `train.sh` into all TPU workers.
+
+Note that the docker image is specified in `host.sh`. Make sure the docker image is accessible in your GCP project. If not, please download the image first, upload it to your GCP project and change env `$DOCKER_IMAGE$` to the registry URL you own.
+
+When all training steps complete, the benchmark script will print out the average step time. You shall see the performance metric in the terminal like:
 ```
 [worker :x] Average step time: ...
 ```
-, which tells the average step time for each batch run of each worker. In addition,  it will copy the profile back to current folder under *profile/* and the trained model in safetensor format under *output/*. Use TensorBoard to open the profile and measure the step time from the "Trace View.".
+This tells the average step time for each batch run of each worker. In addition, it will copy the profile back to current folder under *profile/* and the trained model in safetensor format under *output/*. Use TensorBoard to open the profile and measure the step time from the "Trace View.".
 
 
 ### Environment Envs Explained
