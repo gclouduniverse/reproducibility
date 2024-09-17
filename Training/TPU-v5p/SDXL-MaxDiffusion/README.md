@@ -8,21 +8,24 @@ Build a local docker image.
 
 ```
 LOCAL_IMAGE_NAME=maxdiffusion_base_image
-docker build  --no-cache --network host -f .docker/maxdiffusion.Dockerfile -t ${LOCAL_IMAGE_NAME} .
+docker build  --no-cache --network host -f ./docker/maxdiffusion.Dockerfile -t ${LOCAL_IMAGE_NAME} .
 ```
 
 Run workload using xpk.
 
 ```
 export BASE_OUTPUT_DIR=gs://output_bucket/
+export NUM_SLICES=1
 
 xpk workload create \
 --cluster <cluster_name> \
 --base-docker-image maxdiffusion_base_image \
---workload ${USER}-sd21-v5p \
+--workload ${USER}-sdxl-v5p \
 --tpu-type=<tpu_type> \
 --num-slices=${NUM_SLICES}  \
---command "bash scripts/run_v5p-ddp-pbs-1.sh DATA_DIR=${DATA_DIR} BASE_OUTPUT_DIR=${BASE_OUTPUT_DIR}"
+--zone $ZONE \
+--project $PROJECT \
+--command "bash scripts/run_v5p-ddp-pbs-1.sh BASE_OUTPUT_DIR=${BASE_OUTPUT_DIR} COMMITS=6234383f94f85d5086d125472f923e58d132f984"
 ```
 
 MFU Calculation.

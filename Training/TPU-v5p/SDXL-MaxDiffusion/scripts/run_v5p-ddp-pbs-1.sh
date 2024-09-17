@@ -1,4 +1,5 @@
 BASE_OUTPUT_DIR=$1
+COMMITS=$2
 
 # Set environment variables
 for ARGUMENT in "$@"; do
@@ -14,6 +15,10 @@ LIBTPU_INIT_ARGS+=' --xla_enable_async_reduce_scatter_fusion=true --xla_tpu_enab
 LIBTPU_INIT_ARGS+=' --xla_tpu_spmd_threshold_for_allgather_cse=1000000 --xla_jf_spmd_threshold_for_windowed_einsum_mib=1000000'
 
 #reload code to specific commits
-cd maxdiffusion
+rm -rf maxdiffusion
 
-python src/maxdiffusion/train_sdxl.py src/maxdiffusion/configs/base_xl.yml revision=refs/pr/95 activations_dtype=bfloat16 weights_dtype=bfloat16 run_name="xpk_test-sdxl-ddp" resolution=1024 per_device_batch_size=1 output_dir=$BASE_OUTPUT_DIR jax_cache_dir=${BASE_OUTPUT_DIR}/cache_dir/ max_train_steps=5000 attention=flash run_name=sdxl-fsdp-v5p-64-ddp
+git clone https://github.com/google/maxdiffusion.git
+cd maxdiffusion
+git checkout ${COMMITS} 
+
+python src/maxdiffusion/train_sdxl.py src/maxdiffusion/configs/base_xl.yml revision=refs/pr/95 activations_dtype=bfloat16 weights_dtype=bfloat16 resolution=1024 per_device_batch_size=1 output_dir=$BASE_OUTPUT_DIR jax_cache_dir=${BASE_OUTPUT_DIR}/cache_dir/ max_train_steps=5000 attention=flash run_name=sdxl-fsdp-v5p-64-ddp
