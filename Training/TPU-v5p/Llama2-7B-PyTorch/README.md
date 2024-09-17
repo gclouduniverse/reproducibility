@@ -1,11 +1,11 @@
 # Instructions for training Llama2-7B with Pytorch/XLA on TPU-V5p
 
-This user guide provides a concise overview of the essential steps required to run Llama2-7B training on Cloud TPUs.
+This user guide provides a concise overview of the essential steps required to run Llama2-7B training on Cloud TPUs. You can also modify `config.json` to target other llamamodel configurations.
 
 
 ## Environment Setup
 
-The following setup assumes to run the training job with llama2-7b on GCE TPUs using the docker image from this registery (us-central1-docker.pkg.dev/tpu-pytorch/docker/reproducibility/llama3:v0), the docker image uses the pytorch and torch_xla and installed with all the package dependency needed to run the model training. In order to run hugging face llama2 on TPU. Please follow corresponding TPU generation's user guide to setup the GCE TPUs first. All the command below should run from your own machine (not the TPU host you created).
+The following setup assumes to run the training job with llama2-7b on GCE TPUs using the docker image from this registery (us-central1-docker.pkg.dev/tpu-pytorch/docker/reproducibility/llama2@sha256:3fda2382a36c8a7c39f8838f9a1abde3a161fd47283b052d04fa090e3ee210f5), the docker image uses the pytorch and torch_xla nightly build from 09/17/2024 and installed with all the package dependency needed to run the model training. In order to run hugging face llama2-7b on TPU. Please follow corresponding TPU generation's user guide to setup the GCE TPUs first. All the command below should run from your own machine (not the TPU host you created).
 
 ### Setup Environment of Your TPUs
 Please replace all your-* with your TPUs' information.
@@ -18,8 +18,8 @@ export PROJECT=your-tpu-project
 ### Simple Run Command
 1. git clone and navigate to this README repo and run training script:
 ```bash
-git clone  --depth 1 https://github.com/gclouduniverse/reproducibility.git/
-cd reproducibility/Training/TPU-v5p/Llama2-7B-Pytorch-PyTorch
+git clone  --depth 1 https://github.com/gclouduniverse/reproducibility.git
+cd reproducibility/Training/TPU-v5p/Llama2-7B-Pytorch
 ```
 2. Edit `env.sh` to add the hugging face token and/or setup the training parameters.
 ```bash
@@ -30,3 +30,23 @@ HF_TOKEN=hf_***
 bash benchmark.sh
 ```
 `benchmark.sh` script will upload 1) environment parameters in `env.sh`, 2) model related config in `config.json`, `fsdp_config.json`, 3) docker launch script in `host.sh` and 4) python training command in `train.sh` into all TPU workers, and starts the training afterwards. After the training completes, it will copy the output back under folder *output/*.
+
+
+
+### Torch/XLA General Environment Envs Explained
+
+*   `DOCKER_IMAGE`: Docker registry URL of the image to pull on all TPU workers.
+*   `PJRT_DEVICE`: Specify the XLA device.
+*   `XLA_USE_SPMD`: Turn on GSPMD.
+*   `XLA_IR_DEBUG`: Capture Python stack trace in Lazy IRs.
+*   `XLA_HLO_DEBUG`: Capture Python stack trace in HLOs.
+*   `PROFILE_EPOCH`: Specify which epoch to start taking the profile.
+*   `PROFILE_STEP`: Specify which step to start taking the profile.
+*   `PROFILE_DURATION_MS`: Specify how long the profiling will last.
+*   `PROFILE_LOGDIR`: Specify where to put the profiling results.
+
+
+### HF Llama Arguments Explained
+
+*   `--flash_attention`: [bool] Enable Pallas FlashAttention. Default: False.
+*   `--per_device_train_batch_size`: [int] Specify the global batch size. GSPMD treats the program as a singel device program.
