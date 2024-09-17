@@ -1,11 +1,11 @@
 # Instructions for training Llama2-7B with Pytorch/XLA on TPU-V5p
 
-This user guide provides a concise overview of the essential steps required to run StableDiffusion 2.0 base training on Cloud TPUs.
+This user guide provides a concise overview of the essential steps required to run Llama2-7B training on Cloud TPUs.
 
 
 ## Environment Setup
 
-The following setup assumes to run the training job with llama2-7b base on GCE TPUs using the docker image from this registery (us-central1-docker.pkg.dev/tpu-pytorch/docker/reproducibility/llama3:v0), the docker image uses the pytorch and torch_xla nightly build from 09/05 and has all the package dependency installed. It cloned the git repo from [https://github.com/pytorch-tpu/diffusers](https://github.com/pytorch-tpu/diffusers/) in order to run hugging face llama2 on TPU. Please follow corresponding TPU generation's user guide to setup the GCE TPUs first. All the command below should run from your own machine (not the TPU host you created).
+The following setup assumes to run the training job with llama2-7b on GCE TPUs using the docker image from this registery (us-central1-docker.pkg.dev/tpu-pytorch/docker/reproducibility/llama3:v0), the docker image uses the pytorch and torch_xla and installed with all the package dependency needed to run the model training. In order to run hugging face llama2 on TPU. Please follow corresponding TPU generation's user guide to setup the GCE TPUs first. All the command below should run from your own machine (not the TPU host you created).
 
 ### Setup Environment of Your TPUs
 Please replace all your-* with your TPUs' information.
