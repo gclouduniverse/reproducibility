@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python /home/diffusers/examples/text_to_image/train_text_to_image_xla.py \
+python /workspace/diffusers/examples/text_to_image/train_text_to_image_xla.py \
 --pretrained_model_name_or_path=stabilityai/stable-diffusion-2-base \
 --dataset_name=$DATASET_NAME --resolution=$RESOLUTION --center_crop --random_flip \
 --train_batch_size=$PER_HOST_BATCH_SIZE --max_train_steps=$TRAIN_STEPS \

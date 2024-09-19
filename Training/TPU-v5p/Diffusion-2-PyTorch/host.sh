@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKER_IMAGE="us-central1-docker.pkg.dev/tpu-pytorch/docker/development/pytorch-tpu-diffusers:v1"
+DOCKER_IMAGE="us-central1-docker.pkg.dev/tpu-pytorch/docker/development/pytorch-tpu-diffusers:v2"
 worker_id=$(curl -s "http://metadata.google.internal/computeMetadata/v1/instance/attributes/agent-worker-number" -H 'Metadata-Flavor: Google')
 cat >> /dev/null <<EOF
 EOF
