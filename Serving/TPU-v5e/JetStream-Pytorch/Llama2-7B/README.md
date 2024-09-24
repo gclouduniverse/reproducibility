@@ -28,6 +28,7 @@ Do not install jetstream separately, the above command will install everything.
 
 ```bash
 export input_ckpt_dir=$WORKDIR/ckpt/llama2-7b/original
+mkdir -p $input_ckpt_dir
 
 # NOTE: get your own weights from meta!
 gcloud storage cp hanq-random/llama-2-7b-chat/* $input_ckpt_dir
@@ -41,7 +42,7 @@ export tokenizer_path=$input_ckpt_dir/tokenizer.llama2
 ## Step 1: Convert model
 export output_ckpt_dir=$WORKDIR/ckpt/llama2-7b/converted
 mkdir -p ${output_ckpt_dir}
-python -m convert_checkpoints --model_name=$model_name --input_checkpoint_dir=$input_ckpt_dir --output_checkpoint_dir=$output_ckpt_dir --quantize_weights=True --from_hf=True
+python -m convert_checkpoints --model_name=$model_name --input_checkpoint_dir=$input_ckpt_dir --output_checkpoint_dir=$output_ckpt_dir --quantize_weights=True
 ```
 
 # Benchmark
