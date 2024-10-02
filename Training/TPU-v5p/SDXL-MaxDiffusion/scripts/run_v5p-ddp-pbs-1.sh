@@ -21,4 +21,4 @@ git clone https://github.com/google/maxdiffusion.git
 cd maxdiffusion
 git checkout ${COMMITS} 
 
-python src/maxdiffusion/train_sdxl.py src/maxdiffusion/configs/base_xl.yml revision=refs/pr/95 activations_dtype=bfloat16 weights_dtype=bfloat16 resolution=1024 per_device_batch_size=1 output_dir=$BASE_OUTPUT_DIR jax_cache_dir=${BASE_OUTPUT_DIR}/cache_dir/ max_train_steps=5000 attention=flash run_name=sdxl-fsdp-v5p-64-ddp
+python src/maxdiffusion/train_sdxl.py src/maxdiffusion/configs/base_xl.yml revision=refs/pr/95 activations_dtype=bfloat16 weights_dtype=bfloat16 resolution=1024 per_device_batch_size=8 output_dir=$BASE_OUTPUT_DIR jax_cache_dir=${BASE_OUTPUT_DIR}/cache_dir/ max_train_steps=5000 attention=flash run_name=sdxl-fsdp-v5p-ddp

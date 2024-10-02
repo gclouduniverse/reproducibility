@@ -1,4 +1,4 @@
-# Instructions for training Stable Diffusion 2 on TPU v5p
+# Instructions for training Stable Diffusion XL on TPU v5p
 
 This documents present steps to run StableDiffusion [MaxDiffusion](https://github.com/google/maxdiffusion/tree/main/src/maxdiffusion) workload through [XPK](https://github.com/google/xpk/blob/main/README.md) tool.
 
@@ -25,12 +25,12 @@ xpk workload create \
 --num-slices=${NUM_SLICES}  \
 --zone $ZONE \
 --project $PROJECT \
---command "bash scripts/run_v5p-ddp-pbs-1.sh BASE_OUTPUT_DIR=${BASE_OUTPUT_DIR} COMMITS=6234383f94f85d5086d125472f923e58d132f984"
+--command "bash scripts/run_v5p-ddp-pbs-1.sh BASE_OUTPUT_DIR=${BASE_OUTPUT_DIR} COMMITS=00150750841e9155669fd1ac4c6f2fcd0e0654e0"
 ```
 
 MFU Calculation.
 
-Above only Unet is trainable model, from FLOPS count, Per Step FLOPS = 2.41G FLOPS @BS=1, we get the MFU
+Above only UNET is trainable model, FLOPS count = 162.27 TFLOPS @BS=8, we get the MFU
 ```
-MFU = Per Step FLOPS * BatchSize Per Device / Step Time / Per Device Peak FLOPS
+MFU = UNET FLOPS / Step Time / Per Device Peak FLOPS
 ```

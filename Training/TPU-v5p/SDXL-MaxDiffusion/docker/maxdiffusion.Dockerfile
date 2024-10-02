@@ -28,7 +28,7 @@ RUN git clone https://github.com/google/maxdiffusion.git
 
 WORKDIR maxdiffusion
 
-RUN git checkout 6234383f94f85d5086d125472f923e58d132f984
+RUN git checkout 00150750841e9155669fd1ac4c6f2fcd0e0654e0
 RUN pip install -r requirements.txt
 
 RUN pip install .
