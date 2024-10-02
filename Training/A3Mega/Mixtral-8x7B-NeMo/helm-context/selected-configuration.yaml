@@ -1,10 +1,9 @@
 run:
-  name: xx
-  results_dir: xx
+  name: mixtral_8x7b_bf16
+  results_dir:
   time_limit: 01:00:00
   dependency: singleton
 trainer:
-  num_nodes: 32
   devices: 8
   accelerator: gpu
   precision: bf16
