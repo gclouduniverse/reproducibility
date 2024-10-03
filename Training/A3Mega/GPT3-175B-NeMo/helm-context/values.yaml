@@ -37,8 +37,8 @@ workload:
 network:
   stack: "tcpxo" # one of {"tcp", "tcpx", "tcpxo"}
 
-  daemonVersion: "us-docker.pkg.dev/gce-ai-infra/gpudirect-tcpxo/tcpgpudmarxd-dev:v1.0.8"
-  pluginVersion: "us-docker.pkg.dev/gce-ai-infra/gpudirect-tcpxo/nccl-plugin-gpudirecttcpx-dev:v1.0.1"
+  daemonVersion: "us-docker.pkg.dev/gce-ai-infra/gpudirect-tcpxo/tcpgpudmarxd-dev:v1.0.9"
+  pluginVersion: "us-docker.pkg.dev/gce-ai-infra/gpudirect-tcpxo/nccl-plugin-gpudirecttcpx-dev:v1.0.3"
     
 
   ncclSettings:
