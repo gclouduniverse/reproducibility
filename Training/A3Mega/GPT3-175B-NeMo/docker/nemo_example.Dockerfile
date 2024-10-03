@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM nvcr.io/nvidia/nemo:24.05
+FROM nvcr.io/nvidia/nemo:24.07
 WORKDIR /workspace
 
 # GCSfuse components (used to provide shared storage, not intended for high performance)

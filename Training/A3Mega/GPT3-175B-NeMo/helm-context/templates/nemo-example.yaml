@@ -328,6 +328,8 @@ spec:
         value: "libnccl-tuner.so"
       - name: NCCL_TUNER_CONFIG_PATH
         value: "/usr/local/nccl-plugin/lib64/a3plus_tuner_config.textproto"
+      - name: NCCL_SHIMNET_GUEST_CONFIG_CHECKER_CONFIG_FILE
+        value: "/usr/local/nccl-plugin/lib64/a3plus_guest_config.textproto"
    
       {{ end }}
 
