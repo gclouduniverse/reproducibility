@@ -59,8 +59,6 @@ network:
     
 
   ncclSettings:
-  - name: TRAINING_FILENAME
-    value: "mixtral-8x7b-nvidia-configs.yaml"
   - name: IMAGE_VERSION
     value: "24.05"
     
