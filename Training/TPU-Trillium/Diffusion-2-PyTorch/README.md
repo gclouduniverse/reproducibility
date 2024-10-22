@@ -1,4 +1,4 @@
-# Instructions for training Stable Diffusion 2 on TPU v5p
+# Instructions for training Stable Diffusion 2 on TPU Trillium
 
 
 This user guide provides a concise overview of the essential steps required to run StableDiffusion 2.0 base training on Cloud TPUs.
@@ -20,7 +20,7 @@ export PROJECT=your-tpu-project
 git clone and navigate to this README repo and run training script:
 ```bash
 git clone --depth 1 https://github.com/gclouduniverse/reproducibility.git
-cd reproducibility/Training/TPU-v5p/Diffusion-2-PyTorch
+cd reproducibility/Training/TPU-Trillium/Diffusion-2-PyTorch
 bash benchmark.sh
 ```
 `benchmark.sh` script will upload 1) environment parameters in `env.sh`,  2) docker launch script in `host.sh` and 3) python training command in `train.sh` into all TPU workers.
