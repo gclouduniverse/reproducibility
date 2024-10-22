@@ -25,7 +25,7 @@ bash benchmark.sh
 ```
 `benchmark.sh` script will upload 1) environment parameters in `env.sh`,  2) docker launch script in `host.sh` and 3) python training command in `train.sh` into all TPU workers.
 
-Note that the docker image is specified in `host.sh`. Make sure the docker image is accessible in your GCP project. If not, please download the image first, upload it to your GCP project and change env `$DOCKER_IMAGE$` to the registry URL you own.
+Note that the docker image is specified in `host.sh`. Make sure the docker image is accessible in your GCP project. If not, please download the image first, upload it to your GCP project and change env `$DOCKER_IMAGE` to the registry URL you own.
 
 When all training steps complete, the benchmark script will print out the average step time. You shall see the performance metric in the terminal like:
 ```
