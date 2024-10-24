@@ -1,11 +1,18 @@
 # Setup
+### NOTE 
+```
+MOE 8x22B optimal implementation and benchmarking is WIP
+
+Currently, it works on v6e-8 and random int8 weights
+```
+
 
 ## Step 1: Download JetStream and MaxText github repository
 ```bash
 cd ~
 git clone https://github.com/google/maxtext.git
 cd maxtext
-git checkout main
+git checkout rand_int8
 
 cd ~
 git clone https://github.com/google/JetStream.git
@@ -29,29 +36,9 @@ pip install -r requirements.in
 cd ~
 cd maxtext/
 bash setup.sh
-```
 
-## Step 3: Checkpoint conversion
+pip install aqtp==0.7.5
 
-```bash
-# Get checkpoint from https://github.com/mistralai/mistral-inference
-export M8x22B_DIR=$HOME/8x22b_instruct
-wget https://models.mistralcdn.com/mixtral-8x22b-v0-3/mixtral-8x22B-Instruct-v0.3.tar
-mkdir -p ${M8x22B_DIR}
-tar -xf mixtral-8x22B-Instruct-v0.3 -C ${M8x22B_DIR}
-
-export CHKPT_BUCKET=gs://...
-export MAXTEXT_BUCKET_SCANNED=gs://...
-export MAXTEXT_BUCKET_UNSCANNED=gs://...
-gsutil cp -r ${M8x22B_DIR} ${CHKPT_BUCKET}
-
-# Checkpoint conversion
-cd maxtext
-bash ../JetStream/jetstream/tools/maxtext/model_ckpt_conversion.sh mixtral 8x22b ${CHKPT_BUCKET} ${MAXTEXT_BUCKET_SCANNED} ${MAXTEXT_BUCKET_UNSCANNED}
-
-# The path to the unscanned checkpoint should be set by the script, but set it explicitly if it hasn't
-# For example export UNSCANNED_CKPT_PATH=gs://${MAXTEXT_BUCKET_UNSCANNED}/mixtral-8x22b_unscanned_chkpt_2024-08-23-23-17/checkpoints/0/items
-export UNSCANNED_CKPT_PATH=gs://..
 ```
 
 # Benchmark
@@ -67,14 +54,13 @@ export ICI_FSDP_PARALLELISM=1
 export ICI_AUTOREGRESSIVE_PARALLELISM=1
 export ICI_TENSOR_PARALLELISM=-1
 export SCAN_LAYERS=false
-export WEIGHT_DTYPE=bfloat16
-export PER_DEVICE_BATCH_SIZE=11
+export WEIGHT_DTYPE=int8
+export PER_DEVICE_BATCH_SIZE=36
 
 cd ~/maxtext
 python MaxText/maxengine_server.py \
   MaxText/configs/base.yml \
   tokenizer_path=${TOKENIZER_PATH} \
-  load_parameters_path=${LOAD_PARAMETERS_PATH} \
   max_prefill_predict_length=${MAX_PREFILL_PREDICT_LENGTH} \
   max_target_length=${MAX_TARGET_LENGTH} \
   model_name=${MODEL_NAME} \
@@ -83,7 +69,8 @@ python MaxText/maxengine_server.py \
   ici_tensor_parallelism=${ICI_TENSOR_PARALLELISM} \
   scan_layers=${SCAN_LAYERS} \
   weight_dtype=${WEIGHT_DTYPE} \
-  per_device_batch_size=${PER_DEVICE_BATCH_SIZE}
+  per_device_batch_size=${PER_DEVICE_BATCH_SIZE} \
+  quantize_kvcache=True
 ```
 
 In terminal tab 2, run the benchmark:
