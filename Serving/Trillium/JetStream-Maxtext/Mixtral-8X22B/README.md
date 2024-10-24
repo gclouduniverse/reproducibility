@@ -70,7 +70,8 @@ python MaxText/maxengine_server.py \
   scan_layers=${SCAN_LAYERS} \
   weight_dtype=${WEIGHT_DTYPE} \
   per_device_batch_size=${PER_DEVICE_BATCH_SIZE} \
-  quantize_kvcache=True
+  quantize_kvcache=True \
+  attention=dot_product
 ```
 
 In terminal tab 2, run the benchmark:
