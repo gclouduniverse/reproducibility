@@ -3,6 +3,8 @@
 This user guide provides a concise overview of the essential steps required to
 run Hugging Face (HF) Llama 3 405B training on Trillium TPUs.
 
+Note: the current docker supports Single Pod v6e. The multipod solution will be available in an upcoming update soon.
+
 ## Environment Setup
 
 Please follow the corresponding TPU generation's user guide to setup the GCE TPUs
