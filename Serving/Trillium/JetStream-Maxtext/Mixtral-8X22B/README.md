@@ -3,7 +3,7 @@
 ```
 MOE 8x22B optimal implementation and benchmarking is WIP
 
-Currently, it works on v6e-8 and random int8 weights
+Currently, it works on v6e-8 and int8 weights
 ```
 
 
