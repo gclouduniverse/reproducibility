@@ -92,5 +92,18 @@ python JetStream/benchmarks/benchmark_serving.py   \
 
 After the benchmark finishes, you should see something like 
 ```bash
-
+Successful requests: 995
+Benchmark duration: 445.972525 s
+Total input tokens: 210595
+Total generated tokens: 1020870
+Request throughput: 2.23 requests/s
+Input token throughput: 472.22 tokens/s
+Output token throughput: 2289.09 tokens/s
+Mean TTFT: 191650.58 ms
+Median TTFT: 186643.05 ms
+P99 TTFT: 389921.50 ms
+Mean TPOT: 250.54 ms
+Median TPOT: 244.73 ms
+P99 TPOT: 434.34 ms
+...
 ```
