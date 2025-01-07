@@ -12,12 +12,12 @@ Currently, it works on v6e-8 and random int8 weights
 cd ~
 git clone https://github.com/google/maxtext.git
 cd maxtext
-git checkout rand_int8
+
 
 cd ~
 git clone https://github.com/google/JetStream.git
 cd JetStream
-git checkout main
+git checkout v0.3
 ```
 
 ## Step 2: Setup JetStream and MaxText
@@ -36,9 +36,6 @@ pip install -r requirements.in
 cd ~
 cd maxtext/
 bash setup.sh
-
-pip install aqtp==0.7.5
-
 ```
 
 # Benchmark
@@ -54,8 +51,8 @@ export ICI_FSDP_PARALLELISM=1
 export ICI_AUTOREGRESSIVE_PARALLELISM=1
 export ICI_TENSOR_PARALLELISM=-1
 export SCAN_LAYERS=false
-export WEIGHT_DTYPE=int8
-export PER_DEVICE_BATCH_SIZE=36
+export WEIGHT_DTYPE=bfloat16d
+export PER_DEVICE_BATCH_SIZE=24
 
 cd ~/maxtext
 python MaxText/maxengine_server.py \
@@ -70,8 +67,12 @@ python MaxText/maxengine_server.py \
   scan_layers=${SCAN_LAYERS} \
   weight_dtype=${WEIGHT_DTYPE} \
   per_device_batch_size=${PER_DEVICE_BATCH_SIZE} \
+  quantization=int8 \
   quantize_kvcache=True \
-  attention=dot_product
+  checkpoint_is_quantized=True \
+  attention=dot_product \
+  megablox=False \
+  model_call_mode=inference
 ```
 
 In terminal tab 2, run the benchmark:
@@ -89,7 +90,7 @@ python JetStream/benchmarks/benchmark_serving.py   \
 --dataset openorca
 ```
 
-(TODO: update) After the benchmark finishes, you should see something like 
+After the benchmark finishes, you should see something like 
 ```bash
 
 ```
