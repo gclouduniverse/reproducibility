@@ -35,6 +35,7 @@ pip install -r requirements.in
 
 cd ~
 cd maxtext/
+git checkout git checkout d1d767a8ac849c57b7b7a9cc30e7ceed8a669118
 bash setup.sh
 ```
 
