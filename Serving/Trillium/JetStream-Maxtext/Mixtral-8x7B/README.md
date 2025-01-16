@@ -72,6 +72,7 @@ python MaxText/maxengine_server.py \
   checkpoint_is_quantized=True \
   attention=dot_product \
   megablox=False \
+  sparse_matmul=False \
   compute_axis_order=0,2,1,3 \
   ar_cache_axis_order=0,2,1,3 \
   model_call_mode=inference
