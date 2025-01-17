@@ -63,7 +63,8 @@ python MaxText/maxengine_server.py \
   scan_layers=${SCAN_LAYERS} \
   weight_dtype=${WEIGHT_DTYPE} \
   per_device_batch_size=${PER_DEVICE_BATCH_SIZE} \
-  megablox=False capacity_factor=-1 \ 
+  megablox=False \
+  capacity_factor=-1 \
   quantization=int8 checkpoint_is_quantized=True \
   quantize_kvcache=True
 ```
