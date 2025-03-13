@@ -1,5 +1,15 @@
-# reproducibility
+## For GPU recipes: https://github.com/AI-Hypercomputer/gpu-recipes
+## For TPU recipes: https://github.com/AI-Hypercomputer/tpu-recipes
 
+<br />
+<br /> 
+<br /> 
+<br /> 
+<br /> 
+<br /> 
+
+# reproducibility - DEPRECATED 
+  
 ## Workload Reproduction Demo
 This repository provides the necessary files and instructions to reproduce a specific workload to individuals outside of Google.
 
